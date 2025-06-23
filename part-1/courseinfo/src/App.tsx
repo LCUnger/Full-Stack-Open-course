@@ -1,6 +1,6 @@
 interface Part {
   name: string;
-  numExercises: number;
+  exercises: number;
 }
 
 const Header = (props: { courseName: string }) => {
@@ -10,7 +10,7 @@ const Header = (props: { courseName: string }) => {
 const Part = (props: { part: Part }) => {
   return (
     <p>
-      {props.part.name}: {props.part.numExercises}
+      {props.part.name}: {props.part.exercises}
     </p>
   )
 }
@@ -20,7 +20,7 @@ const Content = (props: { parts: Part[] }) => {
     <div>
       {/* {props.parts.map((part, idx) => (
         <p key={idx}>
-          {part.name}: {part.numExercises}
+          {part.name}: {part.exercises}
         </p>
       ))} */}
       {/* I had the above earlier, but I believe this is how you wanted it. */}
@@ -32,24 +32,27 @@ const Content = (props: { parts: Part[] }) => {
 }
 
 const Total = (props: { parts: Part[]} ) => {
-  const totalExercises = props.parts.reduce((sum, part) => sum + part.numExercises, 0)
+  const totalExercises = props.parts.reduce((sum, part) => sum + part.exercises, 0)
   return <p>Number of exercises: {totalExercises}</p>
 }
 
 
 const App = () => {
   const course = 'Half Stack application development'
-  const part1 = 'Fundamentals of React'
-  const exercises1 = 10
-  const part2 = 'Using props to pass data'
-  const exercises2 = 7
-  const part3 = 'State of a component'
-  const exercises3 = 14
+  const part1: Part = {
+    name: 'Fundamentals of React',
+    exercises: 10
+  }
+  const part2 = {
+    name: 'Using props to pass data',
+    exercises: 7
+  }
+  const part3 = {
+    name: 'State of a component',
+    exercises: 14
+  }
 
-  const parts: Part[] = [
-    { name: part1, numExercises: exercises1 },
-    { name: part2, numExercises: exercises2 },
-    { name: part3, numExercises: exercises3 }]
+  const parts: Part[] = [part1, part2, part3]
 
   return (
     <div>
