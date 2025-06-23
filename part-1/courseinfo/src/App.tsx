@@ -7,14 +7,26 @@ const Header = (props: { courseName: string }) => {
   return <h1>{props.courseName}</h1>
 }
 
+const Part = (props: { part: Part }) => {
+  return (
+    <p>
+      {props.part.name}: {props.part.numExercises}
+    </p>
+  )
+}
+
 const Content = (props: { parts: Part[] }) => {
   return (
     <div>
-      {props.parts.map((part, idx) => (
+      {/* {props.parts.map((part, idx) => (
         <p key={idx}>
           {part.name}: {part.numExercises}
         </p>
-      ))}
+      ))} */}
+      {/* I had the above earlier, but I believe this is how you wanted it. */}
+      <Part part={props.parts[0]} />
+      <Part part={props.parts[1]} />
+      <Part part={props.parts[2]} />
     </div>
   )
 }
