@@ -18,11 +18,15 @@ const Part = (props: { part: Part }) => {
 const Content = (props: { parts: Part[] }) => {
   return (
     <div>
-      {props.parts.map((part, idx) => (
+      {/* {props.parts.map((part, idx) => (
         <p key={idx}>
           {part.name}: {part.exercises}
         </p>
-      ))}
+      ))} */}
+      {/* I had the above earlier, but I believe this is how you wanted it. */}
+      <Part part={props.parts[0]} />
+      <Part part={props.parts[1]} />
+      <Part part={props.parts[2]} />
     </div>
   )
 }
