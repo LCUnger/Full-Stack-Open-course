@@ -18,15 +18,11 @@ const Part = (props: { part: Part }) => {
 const Content = (props: { parts: Part[] }) => {
   return (
     <div>
-      {/* {props.parts.map((part, idx) => (
+      {props.parts.map((part, idx) => (
         <p key={idx}>
           {part.name}: {part.exercises}
         </p>
-      ))} */}
-      {/* I had the above earlier, but I believe this is how you wanted it. */}
-      <Part part={props.parts[0]} />
-      <Part part={props.parts[1]} />
-      <Part part={props.parts[2]} />
+      ))}
     </div>
   )
 }
@@ -39,20 +35,20 @@ const Total = (props: { parts: Part[]} ) => {
 
 const App = () => {
   const course = 'Half Stack application development'
-  const part1: Part = {
-    name: 'Fundamentals of React',
-    exercises: 10
-  }
-  const part2 = {
-    name: 'Using props to pass data',
-    exercises: 7
-  }
-  const part3 = {
-    name: 'State of a component',
-    exercises: 14
-  }
-
-  const parts: Part[] = [part1, part2, part3]
+  const parts: Part[] = [
+    {
+      name: 'Fundamentals of React',
+      exercises: 10
+    },
+    {
+      name: 'Using props to pass data',
+      exercises: 7
+    },
+    {
+      name: 'State of a component',
+      exercises: 14
+    }
+  ]
 
   return (
     <div>
