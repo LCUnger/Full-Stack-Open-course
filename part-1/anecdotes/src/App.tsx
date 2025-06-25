@@ -14,22 +14,57 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState<number[]>(Array(anecdotes.length).fill(0))
+  const [maxIndexes, setMaxIndexes] = useState<number[]>([]) // State for maxIndexes
 
   function voteSelected() {
     const newVotes = [...votes];
     newVotes[selected] += 1;
     setVotes(newVotes);
-    console.log(newVotes)
+    updateMaxIndexes(newVotes); // Update maxIndexes whenever votes change
   }
+
+  function updateMaxIndexes(arr: number[]) {
+    const maxValue = Math.max(...arr);
+    const indexes = arr
+      .map((val, idx) => (val === maxValue ? idx : -1))
+      .filter(idx => idx !== -1);
+    setMaxIndexes(indexes);
+  }
+
+  const ShowCaseVotes = ({ maxIndexes }: { maxIndexes: number[] }) => {
+    if (maxIndexes.length === 0) {
+      return (
+        <div>
+          <h1>Anecdote(s) with most votes</h1>
+          <p>No votes yet</p>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <h1>Anecdote(s) with most votes</h1>
+        {maxIndexes.map(index => (
+            <p key={index} style={{ fontStyle: 'italic' }}>
+            {anecdotes[index]}
+            </p>
+        ))}
+          <p> (with {votes[maxIndexes[0]]} votes)</p>
+      </div>
+    );
+  };
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
 
       <div>
         <button onClick={voteSelected}>vote</button>
         <button onClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))}>next anecdote</button>
       </div>
+
+      <ShowCaseVotes maxIndexes={maxIndexes} />
     </div>
   )
 }
