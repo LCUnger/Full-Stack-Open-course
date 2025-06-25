@@ -25,29 +25,37 @@ function positiveFraction(arr: ThreeNumbers): number {
 
 }
 
-type ThreeNumbers = [number,number,number]
+type ThreeNumbers = [number, number, number];
 
-const StatisticLine = ( {text, value} : {text: string, value: number}) => <p>{text}: {value}</p>
+const StatisticLine = ({ text, value }: { text: string; value: number }) => (
+  <tr>
+    <th style={{ textAlign: "left" }}>{text}:</th>
+    <td style={{ textAlign: "left" }}>{value}</td>
+  </tr>
+);
 
-
-const Statistics = ({states, feedbackValues}: { states: ThreeNumbers, feedbackValues: ThreeNumbers }) => {
+const Statistics = ({ states, feedbackValues }: { states: ThreeNumbers; feedbackValues: ThreeNumbers }) => {
   if (total(states) === 0) {
     return (
       <div>
         <h1>Statistics</h1>
         <p>No feedback is given</p>
       </div>
-    )
+    );
   }
   return (
     <div>
       <h1>Statistics</h1>
-      <StatisticLine text="good" value={states[0]} />
-      <StatisticLine text="neutral" value={states[1]} />
-      <StatisticLine text="bad" value={states[2]} />
-      <StatisticLine text="all" value={total(states)} />
-      <StatisticLine text="average" value={average(states, feedbackValues)} />
-      <StatisticLine text="positive" value={positiveFraction(states)} />
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={states[0]} />
+          <StatisticLine text="neutral" value={states[1]} />
+          <StatisticLine text="bad" value={states[2]} />
+          <StatisticLine text="all" value={total(states)} />
+          <StatisticLine text="average" value={average(states, feedbackValues)} />
+          <StatisticLine text="positive" value={positiveFraction(states)} />
+        </tbody>
+      </table>
     </div>
   )
 }
