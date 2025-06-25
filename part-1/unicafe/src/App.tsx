@@ -33,6 +33,14 @@ type ThreeNumbers = [number,number,number]
 
 
 const Statistics = ({states, feedbackValues}: { states: ThreeNumbers, feedbackValues: ThreeNumbers }) => {
+  if (total(states) === 0) {
+    return (
+      <div>
+        <h1>Statistics</h1>
+        <p>No feedback is given</p>
+      </div>
+    )
+  }
   return (
     <div>
       <h1>Statistics</h1>
