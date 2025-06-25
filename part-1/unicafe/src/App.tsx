@@ -8,10 +8,6 @@ const FeedbackButton = ({ text, onClick }: { text: FeedbackType, onClick: () => 
   return <button onClick={onClick}>{text}</button>;
 };
 
-const FeedbackDisplay = ({ text, count }: { text: FeedbackType, count: number }) => {
-  return <p>{text}: {count}</p>;
-};
-
 function total(arr: number[]): number {
   return arr.reduce((acc, val) => acc + val, 0);
 }
@@ -31,6 +27,8 @@ function positiveFraction(arr: ThreeNumbers): number {
 
 type ThreeNumbers = [number,number,number]
 
+const StatisticLine = ( {text, value} : {text: string, value: number}) => <p>{text}: {value}</p>
+
 
 const Statistics = ({states, feedbackValues}: { states: ThreeNumbers, feedbackValues: ThreeNumbers }) => {
   if (total(states) === 0) {
@@ -44,14 +42,12 @@ const Statistics = ({states, feedbackValues}: { states: ThreeNumbers, feedbackVa
   return (
     <div>
       <h1>Statistics</h1>
-      <FeedbackDisplay text="good" count={states[0]} />
-      <FeedbackDisplay text="neutral" count={states[1]} />
-      <FeedbackDisplay text="bad" count={states[2]} />
-
-
-      <p>all {total(states)}</p>
-      <p>average {average(states,feedbackValues)}</p>
-      <p>positive {positiveFraction(states)}%</p>
+      <StatisticLine text="good" value={states[0]} />
+      <StatisticLine text="neutral" value={states[1]} />
+      <StatisticLine text="bad" value={states[2]} />
+      <StatisticLine text="all" value={total(states)} />
+      <StatisticLine text="average" value={average(states, feedbackValues)} />
+      <StatisticLine text="positive" value={positiveFraction(states)} />
     </div>
   )
 }
