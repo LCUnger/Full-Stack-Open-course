@@ -3,21 +3,12 @@ import { useState } from 'react';
 
 type FeedbackType = "good" | "neutral" | "bad"
 
-interface FeedbackButtonProps {
-  text: FeedbackType; // Use the keys of the enum for button text
-  onClick: () => void;
-}
 
-const FeedbackButton = ({ text, onClick }: FeedbackButtonProps) => {
+const FeedbackButton = ({ text, onClick }: { text: FeedbackType, onClick: () => void }) => {
   return <button onClick={onClick}>{text}</button>;
 };
 
-interface FeedbackDisplayProps {
-  text: FeedbackType;
-  count: number;
-}
-
-const FeedbackDisplay = ({ text, count }: FeedbackDisplayProps) => {
+const FeedbackDisplay = ({ text, count }: { text: FeedbackType, count: number }) => {
   return <p>{text}: {count}</p>;
 };
 
@@ -31,7 +22,7 @@ function average(arr: ThreeNumbers, indexValue: ThreeNumbers): number {
   return arr.reduce((acc, val, idx) => acc + val * indexValue[idx], 0) / totalCount;
 }
 
-function postiveFraction(arr: ThreeNumbers): number {
+function positiveFraction(arr: ThreeNumbers): number {
   const totalCount = total(arr)
   if (totalCount === 0) return 0;
   return arr[0]/totalCount*100
@@ -39,6 +30,23 @@ function postiveFraction(arr: ThreeNumbers): number {
 }
 
 type ThreeNumbers = [number,number,number]
+
+
+const Statistics = ({states, feedbackValues}: { states: ThreeNumbers, feedbackValues: ThreeNumbers }) => {
+  return (
+    <div>
+      <h1>Statistics</h1>
+      <FeedbackDisplay text="good" count={states[0]} />
+      <FeedbackDisplay text="neutral" count={states[1]} />
+      <FeedbackDisplay text="bad" count={states[2]} />
+
+
+      <p>all {total(states)}</p>
+      <p>average {average(states,feedbackValues)}</p>
+      <p>positive {positiveFraction(states)}%</p>
+    </div>
+  )
+}
 
 
 const App = () => {
@@ -51,20 +59,14 @@ const App = () => {
 
   return (
     <>
-      <h1>Give Feedback</h1>
-      <FeedbackButton text="good" onClick={() => setGood(good + 1)} />
-      <FeedbackButton text="neutral" onClick={() => setNeutral(neutral + 1)} />
-      <FeedbackButton text="bad" onClick={() => setBad(bad + 1)} />
+      <div>
+        <h1>Give Feedback</h1>
+        <FeedbackButton text="good" onClick={() => setGood(good + 1)} />
+        <FeedbackButton text="neutral" onClick={() => setNeutral(neutral + 1)} />
+        <FeedbackButton text="bad" onClick={() => setBad(bad + 1)} />
+      </div>
 
-      <h1>Statistics</h1>
-      <FeedbackDisplay text="good" count={good} />
-      <FeedbackDisplay text="neutral" count={neutral} />
-      <FeedbackDisplay text="bad" count={bad} />
-
-
-      <p>all {total(states)}</p>
-      <p>average {average(states,feedbackValues)}</p>
-      <p>positive {postiveFraction(states)}%</p>
+      <Statistics states={states} feedbackValues={feedbackValues}/>
     </>
   );
 };
