@@ -1,76 +1,70 @@
 import { useState } from 'react'
+import AddContact from './components/AddContact'
+import DisplayContacts from './components/DisplayContacts'
+import Filter from './components/Filter'
 
-interface Person {
+export interface Person {
   name: string
   phoneNumber: string
-}
-
-const Contact = ({contact}:{contact:Person}) => {
-  return (
-    <p>{contact.name}: +{contact.phoneNumber}</p>
-  )
-}
-
-const DisplayContacts = ({ contacts }: { contacts: Person[] }) => {
-  return (
-    <div>
-      {contacts.map((contact,idx) => (
-        <Contact key={`${contact.name}${idx}`} contact={contact} />
-      ))}
-    </div>
-  )
+  id: number
 }
 
 const App = () => {
   const [persons, setPersons] = useState<Person[]>([
-    { name: 'Arto Hellas' , phoneNumber: '31622334455'}
-  ]) 
-  const [newName, setNewName] = useState<string>('')
-  const [newPhoneNumber, setNewPhoneNumber] = useState<string>('')
+    { name: 'Arto Hellas', phoneNumber: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', phoneNumber: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', phoneNumber: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', phoneNumber: '39-23-6423122', id: 4 },
+  ]);
+  const [newName, setNewName] = useState<string>('');
+  const [newPhoneNumber, setNewPhoneNumber] = useState<string>('');
+  const [filterText, setFilterText] = useState<string>('');
+  const [nextId, setNextId] = useState<number>(
+    persons.length > 0 ? persons.at(-1)!.id + 1 : 1
+  );
 
+  const personsSearched = persons.filter((person) =>
+    person.name.toLowerCase().includes(filterText.toLocaleLowerCase())
+  );
 
   function handleSubmit(event: React.FormEvent) {
-    event.preventDefault()
+    event.preventDefault();
 
-    const nameExists = persons.some((person) => person.name === newName)
+    const nameExists = persons.some((person) => person.name === newName);
 
     if (nameExists) {
-      alert(`${newName} already exists in the phonebook`)
-      return
+      alert(`${newName} already exists in the phonebook`);
+      return;
     }
 
-    const newPerson = {name: newName, phoneNumber: newPhoneNumber}
-    setPersons([...persons, newPerson])
-    setNewName('')
-    console.log([...persons, newPerson])
+    const newPerson = { name: newName, phoneNumber: newPhoneNumber, id: nextId };
+    setPersons([...persons, newPerson]);
+    setNewName('');
+    setNewPhoneNumber('');
+    setNextId(nextId + 1);
   }
-
-
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <Filter 
+        filterText={filterText} 
+        setFilterText={setFilterText} 
+      />
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Name: </label>
-          <input id="name" value={newName} onChange={(event) => setNewName(event.target.value)}/>
-        </div>
-        <div>
-          <label htmlFor="phone-number">phone number +</label>
-          <input type="tel" id="phone-number" value={newPhoneNumber} onChange={(event) => setNewPhoneNumber(event.target.value)}/>
-        </div>
-
-
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <h2>Add new contact</h2>
+      <AddContact
+        handleSubmit={handleSubmit}
+        newName={newName}
+        setNewName={setNewName}
+        newPhoneNumber={newPhoneNumber}
+        setNewPhoneNumber={setNewPhoneNumber}
+      />
 
       <h2>Numbers</h2>
-      <DisplayContacts contacts={persons}/>
+      <DisplayContacts contacts={personsSearched} />
     </div>
-  )
-}
+  );
+};
 
 export default App
