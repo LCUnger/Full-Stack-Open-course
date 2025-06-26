@@ -2,11 +2,12 @@ import { useState } from 'react'
 
 interface Person {
   name: string
+  phoneNumber: string
 }
 
 const Contact = ({contact}:{contact:Person}) => {
   return (
-    <p>{contact.name}</p>
+    <p>{contact.name}: +{contact.phoneNumber}</p>
   )
 }
 
@@ -22,9 +23,10 @@ const DisplayContacts = ({ contacts }: { contacts: Person[] }) => {
 
 const App = () => {
   const [persons, setPersons] = useState<Person[]>([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas' , phoneNumber: '31622334455'}
   ]) 
   const [newName, setNewName] = useState<string>('')
+  const [newPhoneNumber, setNewPhoneNumber] = useState<string>('')
 
 
   function handleSubmit(event: React.FormEvent) {
@@ -37,7 +39,7 @@ const App = () => {
       return
     }
 
-    const newPerson = {name: newName}
+    const newPerson = {name: newName, phoneNumber: newPhoneNumber}
     setPersons([...persons, newPerson])
     setNewName('')
     console.log([...persons, newPerson])
@@ -50,8 +52,15 @@ const App = () => {
       <h2>Phonebook</h2>
 
       <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Name: </label>
-        <input id="name" value={newName} onChange={(event) => setNewName(event.target.value)}/>
+        <div>
+          <label htmlFor="name">Name: </label>
+          <input id="name" value={newName} onChange={(event) => setNewName(event.target.value)}/>
+        </div>
+        <div>
+          <label htmlFor="phone-number">phone number +</label>
+          <input type="tel" id="phone-number" value={newPhoneNumber} onChange={(event) => setNewPhoneNumber(event.target.value)}/>
+        </div>
+
 
         <div>
           <button type="submit">add</button>
