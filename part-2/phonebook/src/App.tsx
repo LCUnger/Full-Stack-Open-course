@@ -29,6 +29,14 @@ const App = () => {
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
+
+    const nameExists = persons.some((person) => person.name === newName)
+
+    if (nameExists) {
+      alert(`${newName} already exists in the phonebook`)
+      return
+    }
+
     const newPerson = {name: newName}
     setPersons([...persons, newPerson])
     setNewName('')
