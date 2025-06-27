@@ -15,8 +15,7 @@ const add = (newObject: PersonWithoutId) => {
 }
 
 const remove = (id: string | number) => {
-    const request = axios.delete<Person>(`${baseUrl}/${id}`)
-    return request.then(response => console.log(response));
+    axios.delete<Person>(`${baseUrl}/${id}`)
 }
 
 export default {getAll, add, remove}

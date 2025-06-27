@@ -47,6 +47,15 @@ const App = () => {
     setNextId(nextId + 1);
   }
 
+  const removeContact = (id: string | number) => {
+    const contact = persons.find(contact => contact.id === id)
+    if (contact && window.confirm(`Delete ${contact.name}`)) {
+      contactServices.remove(id)
+      setPersons(persons.filter((val) => val.id !== id))
+    }
+
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
@@ -65,7 +74,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <DisplayContacts contacts={personsSearched} />
+      <DisplayContacts contacts={personsSearched} removeContact={removeContact}/>
     </div>
   );
 };
