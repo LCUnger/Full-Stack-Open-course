@@ -27,34 +27,55 @@ const App = () => {
     person.name.toLowerCase().includes(filterText.toLocaleLowerCase())
   );
 
-  const [notificationMessage, setNotificationMessage] = useState<string | null>(null)
+  const [notificationMessage, setNotificationMessage] = useState<string | null>(null);
+  const [isError, setIsError] = useState<boolean>(false);
 
-  const pushNotification = (message:string) => {
-    console.log(message);
-    
-    setNotificationMessage(message)
-    setTimeout(() => setNotificationMessage(null), 3000)
+  const pushNotification = (message: string, isError: boolean = false) => {
+    setNotificationMessage(message);
+    setIsError(isError); // Store the error state
+    setTimeout(() => {
+      setNotificationMessage(null);
+      setIsError(false); // Reset the error state
+    }, 3000);
   }
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (persons.some((person) => person.name.trim() === newName.trim())) {
-      if (window.confirm(`${newName.trim()} is already added to the phonebook, replace the old number with a new one?`)) {      
-        const existingPerson: Person = persons.find(person => person.name.trim() === newName.trim())! // Here I use trim to make sure that if a name with space(s) on the end won't result in a new contact
-        const adjustedPerson: Person = { ...existingPerson, number: newPhoneNumber}!
-        contactServices.update(adjustedPerson).then(data => (
-          setPersons(persons.map(person => person.id === existingPerson.id ? data : person))))
+    const handleUpdate = () => {
+      const existingPerson: Person = persons.find(person => person.name.trim() === newName.trim())!
+      const adjustedPerson: Person = { ...existingPerson, number: newPhoneNumber}!
 
-        pushNotification(`Changed number of ${existingPerson.name} from +${existingPerson.number} to +${adjustedPerson.number}`)
+      contactServices.update(adjustedPerson).then(data => (
+          setPersons(persons.map(person => person.id === existingPerson.id ? data : person))
+        ))
+        .catch(error => {
+          if (error.status === 404) {
+            pushNotification(`Information of ${existingPerson.name} has already been removed from the server`, true);
+            setPersons(persons.filter(person => person.id !== existingPerson.id));
+          } else {
+            pushNotification(`Not yet handled error`, true)
+          }
+        })
+
+      pushNotification(`Changed number of ${existingPerson.name} from +${existingPerson.number} to +${adjustedPerson.number}`)
+    }
+
+    const handleAdd = () => {
+      const newPerson = { name: newName.trim(), number: newPhoneNumber.trim()};
+      contactServices.add(newPerson).then(data => setPersons([...persons, data]))
+      pushNotification(`Added ${newPerson.name}`)
+    }
+
+    if (persons.some((person) => person.name.trim() === newName.trim())) { // Here I use trim to make sure that if a name with space(s) on the end won't result in a new contact
+      if (window.confirm(`${newName.trim()} is already added to the phonebook, replace the old number with a new one?`)) {      
+        handleUpdate()
       } else {
         return
       }
 
     } else {
-      const newPerson = { name: newName.trim(), number: newPhoneNumber.trim()};
-      contactServices.add(newPerson).then(data => setPersons([...persons, data]))
-      pushNotification(`Added ${newPerson.name}`)
+      handleAdd()
     }
 
     setNewName('');
@@ -73,7 +94,7 @@ const App = () => {
   return (
     <>
       <h1>Phonebook</h1>
-      <Notification message={notificationMessage}/>
+      <Notification message={notificationMessage} isError={isError}/>
       <Filter 
         filterText={filterText} 
         setFilterText={setFilterText} 
