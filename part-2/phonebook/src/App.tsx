@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import AddContact from './components/AddContact'
 import DisplayContacts from './components/DisplayContacts'
 import Filter from './components/Filter'
+import contactServices from './services/contacts'
 
 export interface Person {
   name: string
@@ -14,7 +14,7 @@ const App = () => {
   const [persons, setPersons] = useState<Person[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(response => setPersons(response.data))
+    contactServices.getAll().then((data: Person[]) => setPersons(data))
   }, [])
 
 
@@ -39,8 +39,9 @@ const App = () => {
       return;
     }
 
-    const newPerson = { name: newName, number: newPhoneNumber, id: nextId };
-    setPersons([...persons, newPerson]);
+    const newPerson = { name: newName, number: newPhoneNumber};
+    contactServices.add(newPerson).then(data => setPersons([...persons, data]))
+    
     setNewName('');
     setNewPhoneNumber('');
     setNextId(nextId + 1);
