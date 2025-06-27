@@ -17,34 +17,36 @@ const App = () => {
     contactServices.getAll().then((data: Person[]) => setPersons(data))
   }, [])
 
-
   const [newName, setNewName] = useState<string>('');
   const [newPhoneNumber, setNewPhoneNumber] = useState<string>('');
   const [filterText, setFilterText] = useState<string>('');
-  const [nextId, setNextId] = useState<number>(
-    persons.length > 0 ? persons.at(-1)!.id + 1 : 1
-  );
 
   const personsSearched = persons.filter((person) =>
     person.name.toLowerCase().includes(filterText.toLocaleLowerCase())
   );
 
-  function handleSubmit(event: React.FormEvent) {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const nameExists = persons.some((person) => person.name === newName);
+    if (persons.some((person) => person.name.trim() === newName.trim())) {
+      if (window.confirm(`${newName.trim()} is already added to the phonebook, replace the old number with a new one?`)) {
+        console.log("same person");
+      
+        const existingPerson: Person = persons.find(person => person.name.trim() === newName.trim())! // Here I use trim to make sure that if a name with space(s) on the end won't result in a new contact
+        const adjustedPerson: Person = { ...existingPerson, number: newPhoneNumber}!
+        contactServices.update(adjustedPerson).then(data => (
+          setPersons(persons.map(person => person.id === existingPerson.id ? data : person))))
+      } else {
+        return
+      }
 
-    if (nameExists) {
-      alert(`${newName} already exists in the phonebook`);
-      return;
+    } else {
+      const newPerson = { name: newName.trim(), number: newPhoneNumber.trim()};
+      contactServices.add(newPerson).then(data => setPersons([...persons, data]))
     }
 
-    const newPerson = { name: newName, number: newPhoneNumber};
-    contactServices.add(newPerson).then(data => setPersons([...persons, data]))
-    
     setNewName('');
     setNewPhoneNumber('');
-    setNextId(nextId + 1);
   }
 
   const removeContact = (id: string | number) => {
