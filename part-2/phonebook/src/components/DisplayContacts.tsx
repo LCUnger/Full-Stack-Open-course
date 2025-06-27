@@ -4,7 +4,7 @@ const Contact = ({contact}:{contact:Person}) => {
   return (
     <tr>
       <td>{contact.name}</td>
-      <td>+{contact.phoneNumber}</td>
+      <td>+{contact.number}</td>
     </tr>
 
   )

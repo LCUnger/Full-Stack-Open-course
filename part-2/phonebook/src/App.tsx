@@ -1,21 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import AddContact from './components/AddContact'
 import DisplayContacts from './components/DisplayContacts'
 import Filter from './components/Filter'
 
 export interface Person {
   name: string
-  phoneNumber: string
+  number: string
   id: number
 }
 
 const App = () => {
-  const [persons, setPersons] = useState<Person[]>([
-    { name: 'Arto Hellas', phoneNumber: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', phoneNumber: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', phoneNumber: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', phoneNumber: '39-23-6423122', id: 4 },
-  ]);
+  const [persons, setPersons] = useState<Person[]>([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/persons').then(response => setPersons(response.data))
+  }, [])
+
+
   const [newName, setNewName] = useState<string>('');
   const [newPhoneNumber, setNewPhoneNumber] = useState<string>('');
   const [filterText, setFilterText] = useState<string>('');
@@ -37,7 +39,7 @@ const App = () => {
       return;
     }
 
-    const newPerson = { name: newName, phoneNumber: newPhoneNumber, id: nextId };
+    const newPerson = { name: newName, number: newPhoneNumber, id: nextId };
     setPersons([...persons, newPerson]);
     setNewName('');
     setNewPhoneNumber('');
