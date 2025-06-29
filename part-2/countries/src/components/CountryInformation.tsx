@@ -29,6 +29,9 @@ const CountryInformation = ({countryDataPromise}: {countryDataPromise: Promise<C
                     ))}
                 </ul>
             </div>
+            <div>
+                <img src={countryData.flags.svg} alt={countryData.flags.alt} style={{ width: "300px", height: "auto" }}/>
+            </div>
         </div>
     )
 }
