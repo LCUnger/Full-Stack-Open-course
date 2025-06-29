@@ -1,5 +1,4 @@
 import axios from 'axios';
-import type { Country } from './buildSearchIndex';
 
 const baseUrl = 'https://studies.cs.helsinki.fi/restcountries/api';
 
@@ -96,7 +95,7 @@ const getAllCountries = () => {
 };
 
 const getCountry = (countryName:string) => {
-    const request = axios.get<CountryData>(`${baseUrl}/${countryName}`)
+    const request = axios.get<CountryData>(`${baseUrl}/name/${countryName}`)
     return request.then((response) => response.data)
 }
 
