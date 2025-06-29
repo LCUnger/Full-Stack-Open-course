@@ -1,0 +1,36 @@
+import type { CountryData } from "../services/countries"
+import { useEffect, useState } from "react";
+
+const CountryInformation = ({countryData}: {countryData: Promise<CountryData>}) => {
+
+    const [country, setCountry] = useState<CountryData | null>(null);
+
+    useEffect(() => {
+        countryData.then(data => setCountry(data)).catch(error => {
+            console.error("Failed to fetch country data:", error);
+        });
+    }, [countryData]);
+
+    if (!country) {
+        return <div>Loading...</div>;
+    }
+    return (
+        <div>
+            <h2>{countryData.name.common}</h2>
+            <div>
+                <p>Capital: ${countryData.capital}</p>
+                <p>Area: ${countryData.area}</p>
+            </div>
+            <div>
+                <h3>Languages</h3>
+                <ul>
+                    {Object.entries(countryData.languages).map(([key, language]) => (
+                        <li key={key}>{language}</li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    )
+}
+
+export default CountryInformation
