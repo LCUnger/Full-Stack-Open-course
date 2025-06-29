@@ -2,7 +2,7 @@ export interface Country {
   commonName: string;
   officialName: string;
 //   nativeNames: string[];
-  alternativeSpellings: string[];
+//   alternativeSpellings: string[];
 //   translations: string[];
 }
 
@@ -14,12 +14,12 @@ const buildSearchIndex = (data: Country[]) => {
       const allNames = [
         country.commonName,
         country.officialName,
-        ...country.alternativeSpellings,
+        // ...country.alternativeSpellings,
         // And maybe more
       ]
       allNames.forEach((name) => {
         const normalizedName = name.toLowerCase()
-        index[normalizedName] = country.officialName
+        index[normalizedName] = country.commonName
       })
     })
 

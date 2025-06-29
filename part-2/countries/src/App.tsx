@@ -22,8 +22,8 @@ function App() {
       const countries: Country[] = rawData.map((country:any) => ({
         commonName: country.name.common,
         officialName: country.name.official,
-        alternativeSpellings: country.altSpellings || []
-      }))
+          // alternativeSpellings: country.altSpellings || [],
+        }));
 
       const index = buildSearchIndex(countries)
 
