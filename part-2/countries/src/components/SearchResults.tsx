@@ -1,7 +1,7 @@
 import CountryInformation from './CountryInformation';
 import countriesService from '../services/countries';
 
-const SearchResults = ({ queryResults }: { queryResults: string[] }) => {
+const SearchResults = ({ queryResults, showCountry }: { queryResults: string[], showCountry: (countryName: string) => void }) => {
   if (queryResults.length === 1) {
     // Case 1: Single match found
     return (
@@ -14,9 +14,12 @@ const SearchResults = ({ queryResults }: { queryResults: string[] }) => {
   if (queryResults.length > 1 && queryResults.length <= 10) {
     // Case 2: Multiple matches (2–10)
     return (
-      <ul>
+      <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
         {queryResults.map((country) => (
-          <li key={country}>{country}</li>
+          <li key={country}>
+            {country}
+            <button onClick={() => showCountry(country)}>show</button>
+          </li>
         ))}
       </ul>
     );

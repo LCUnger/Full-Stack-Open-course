@@ -52,10 +52,14 @@ function App() {
     console.log(filterResults(searchQuery, searchIndex))
   }, [searchQuery, searchIndex]);
 
+  const showCountry = (countryName: string) => {
+    setQueryResults([countryName])
+  }
+
   return (
     <>
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      <SearchResults queryResults={queryResults} />
+      <SearchResults queryResults={queryResults} showCountry={showCountry}/>
     </>
   );
 }
