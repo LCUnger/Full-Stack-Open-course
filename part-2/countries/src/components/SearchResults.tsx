@@ -5,9 +5,7 @@ const SearchResults = ({ queryResults, showCountry }: { queryResults: string[], 
   if (queryResults.length === 1) {
     // Case 1: Single match found
     return (
-      <CountryInformation
-        countryDataPromise={countriesService.getCountry(queryResults[0])}
-      />
+      <CountryInformation countryDataPromise={countriesService.getCountry(queryResults[0])}/>
     );
   }
 

@@ -5,9 +5,6 @@ import countriesService from './services/countries';
 import buildSearchIndex from './services/buildSearchIndex';
 import type { Country, SearchIndex } from './services/buildSearchIndex';
 
-import weatherService from './services/weather'
-
-
 function App() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchIndex, setSearchIndex] = useState<SearchIndex>({});
@@ -54,7 +51,6 @@ function App() {
     };
 
     setQueryResults(filterResults(searchQuery, searchIndex));
-    console.log(filterResults(searchQuery, searchIndex))
   }, [searchQuery, searchIndex]);
 
   const showCountry = (countryName: string) => {
