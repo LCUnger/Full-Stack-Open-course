@@ -5,10 +5,15 @@ import countriesService from './services/countries';
 import buildSearchIndex from './services/buildSearchIndex';
 import type { Country, SearchIndex } from './services/buildSearchIndex';
 
+import weatherService from './services/weather'
+
+
 function App() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchIndex, setSearchIndex] = useState<SearchIndex>({});
   const [queryResults, setQueryResults] = useState<string[]>([]);
+
+  
 
   useEffect(() => {// Build search index on first render
     countriesService
@@ -55,6 +60,8 @@ function App() {
   const showCountry = (countryName: string) => {
     setQueryResults([countryName])
   }
+
+
 
   return (
     <>
