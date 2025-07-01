@@ -11,7 +11,7 @@ interface Contact {
   number: string
 }
 
-const phonebookEntries = [
+let phonebookEntries: Contact[] = [
   { 
     "id": "1",
     "name": "Arto Hellas", 
@@ -51,11 +51,11 @@ app.get('/info', (req: Request, res: Response) => {
     `)
 })
 
-app.get('/api/persons', (req: Request, res: Response) => {
+app.get('/api/persons', (req: Request, res: Response<Contact[]>) => {
   res.json(phonebookEntries)
 })
 
-app.get('/api/persons/:id', (req: Request, res: Response) => {
+app.get('/api/persons/:id', (req: Request<{ id: string}>, res: Response<Contact>) => {
   const id = req.params.id
   const person = phonebookEntries.find(person => person.id === id)
   if (person) {
@@ -66,7 +66,12 @@ app.get('/api/persons/:id', (req: Request, res: Response) => {
   }
 })
 
+app.delete('/api/persons/:id', (req: Request, res: Response) => {
+  const id = req.params.id
+  phonebookEntries = phonebookEntries.filter(person => person.id !== id)
 
+  res.status(204).end()
+})
 
 // Start the server
 app.listen(PORT, () => {
