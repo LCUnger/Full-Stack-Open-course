@@ -34,6 +34,10 @@ let phonebookEntries: Contact[] = [
   }
 ]
 
+const generateId = (): string => {
+  return `${Date.now()}-${Math.random()*10000}`
+}
+
 
 // Routes
 app.get('/', (req: Request, res: Response) => {
@@ -71,6 +75,28 @@ app.delete('/api/persons/:id', (req: Request, res: Response) => {
   phonebookEntries = phonebookEntries.filter(person => person.id !== id)
 
   res.status(204).end()
+})
+
+app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, res: Response<Contact | { error: string }>): void => {
+  const body = req.body
+
+  if (!body.name || !body.number) {
+    res.status(400).json({ error: 'Name or number is missing'})
+    return
+  }
+
+  if (phonebookEntries.some(entry => entry.name === body.name)) {
+    res.status(400).json({ error: 'name must be unique'})
+  }
+
+  const newContact: Contact = {
+    id: generateId(),
+    name: body.name,
+    number: body.number
+  }
+
+  phonebookEntries.push(newContact)
+  res.status(201).json(newContact)
 })
 
 // Start the server
