@@ -50,9 +50,9 @@ const generateId = (): string => {
 
 
 // Routes
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, Express with TypeScript!');
-});
+// app.get('/', (req: Request, res: Response) => {
+//   res.send('Hello, Express with TypeScript!');
+// });
 
 app.get('/info', (req: Request, res: Response) => {
   const currentTime = new Date()

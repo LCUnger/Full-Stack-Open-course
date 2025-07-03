@@ -4,9 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const morgan = require('morgan');
 const app = (0, express_1.default)();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
+app.use(express_1.default.static('dist'));
 app.use(express_1.default.json());
+morgan.token('content', (req, res) => {
+    return JSON.stringify(req.body);
+});
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'));
 let phonebookEntries = [
     {
         "id": "1",
@@ -33,9 +39,9 @@ const generateId = () => {
     return `${Date.now()}-${Math.random() * 10000}`;
 };
 // Routes
-app.get('/', (req, res) => {
-    res.send('Hello, Express with TypeScript!');
-});
+// app.get('/', (req: Request, res: Response) => {
+//   res.send('Hello, Express with TypeScript!');
+// });
 app.get('/info', (req, res) => {
     const currentTime = new Date();
     const totalEntries = phonebookEntries.length;
@@ -83,5 +89,5 @@ app.post('/api/persons', (req, res) => {
 });
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on p0rt ${PORT}`);
 });
