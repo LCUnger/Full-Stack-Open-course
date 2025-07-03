@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 const morgan = require('morgan')
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 
@@ -109,5 +109,5 @@ app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, r
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on p0rt ${PORT}`);
 });
