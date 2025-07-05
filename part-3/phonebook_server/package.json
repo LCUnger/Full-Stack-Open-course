@@ -14,7 +14,11 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@types/mongodb": "^4.0.6",
+    "@types/mongoose": "^5.11.96",
     "express": "^5.1.0",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.1",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
