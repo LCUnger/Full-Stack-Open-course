@@ -25,28 +25,28 @@ export interface Contact {
   number: string
 }
 
-let phonebookEntries: Contact[] = [
-  { 
-    "id": "1",
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": "2",
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": "3",
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": "4",
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-]
+// let phonebookEntries: Contact[] = [
+//   { 
+//     "id": "1",
+//     "name": "Arto Hellas", 
+//     "number": "040-123456"
+//   },
+//   { 
+//     "id": "2",
+//     "name": "Ada Lovelace", 
+//     "number": "39-44-5323523"
+//   },
+//   { 
+//     "id": "3",
+//     "name": "Dan Abramov", 
+//     "number": "12-43-234345"
+//   },
+//   { 
+//     "id": "4",
+//     "name": "Mary Poppendieck", 
+//     "number": "39-23-6423122"
+//   }
+// ]
 
 const generateId = (): string => {
   return `${Date.now()}-${Math.random()*10000}`
@@ -56,7 +56,7 @@ const generateId = (): string => {
 // Routes
 app.get('/info', (req: Request, res: Response) => {
   const currentTime = new Date()
-  const totalEntries = phonebookEntries.length
+  const totalEntries = Contact.countDocuments().then(total => total)
 
   res.send(`
     <div>
