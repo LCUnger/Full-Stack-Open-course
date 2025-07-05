@@ -1,8 +1,12 @@
+require('dotenv').config()
+
 import express, { Request, Response } from 'express';
+import Contact from './models/contact';
+import { mapIContactToContact } from './models/contacts-typeswap';
 const morgan = require('morgan')
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT
 
 
 app.use(express.static('dist'))
@@ -15,7 +19,7 @@ morgan.token('content', (req: Request, res: Response) => {
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
 
-interface Contact {
+export interface Contact {
   id: string,
   name: string,
   number: string
@@ -50,10 +54,6 @@ const generateId = (): string => {
 
 
 // Routes
-// app.get('/', (req: Request, res: Response) => {
-//   res.send('Hello, Express with TypeScript!');
-// });
-
 app.get('/info', (req: Request, res: Response) => {
   const currentTime = new Date()
   const totalEntries = phonebookEntries.length
@@ -66,8 +66,10 @@ app.get('/info', (req: Request, res: Response) => {
 })
 
 app.get('/api/persons', (req: Request, res: Response<Contact[]>) => {
-  res.json(phonebookEntries)
-})
+  Contact.find({}).then(contacts => res.json(contacts.map(contact => (
+    mapIContactToContact(contact)
+  ))))
+  })
 
 app.get('/api/persons/:id', (req: Request<{ id: string}>, res: Response<Contact>) => {
   const id = req.params.id
