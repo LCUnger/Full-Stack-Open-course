@@ -71,45 +71,45 @@ app.get('/api/persons', (req: Request, res: Response<Contact[]>) => {
   ))))
   })
 
-app.get('/api/persons/:id', (req: Request<{ id: string}>, res: Response<Contact>) => {
-  const id = req.params.id
-  const person = phonebookEntries.find(person => person.id === id)
-  if (person) {
-    res.json(person)
-  } else {
-    res.statusMessage = "There is no person that matches this id"
-    res.status(404).end()
-  }
-})
+// app.get('/api/persons/:id', (req: Request<{ id: string}>, res: Response<Contact>) => {
+//   const id = req.params.id
+//   const person = phonebookEntries.find(person => person.id === id)
+//   if (person) {
+//     res.json(person)
+//   } else {
+//     res.statusMessage = "There is no person that matches this id"
+//     res.status(404).end()
+//   }
+// })
 
-app.delete('/api/persons/:id', (req: Request, res: Response) => {
-  const id = req.params.id
-  phonebookEntries = phonebookEntries.filter(person => person.id !== id)
+// app.delete('/api/persons/:id', (req: Request, res: Response) => {
+//   const id = req.params.id
+//   phonebookEntries = phonebookEntries.filter(person => person.id !== id)
 
-  res.status(204).end()
-})
+//   res.status(204).end()
+// })
 
-app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, res: Response<Contact | { error: string }>): void => {
-  const body = req.body
+// app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, res: Response<Contact | { error: string }>): void => {
+//   const body = req.body
 
-  if (!body.name || !body.number) {
-    res.status(400).json({ error: 'Name or number is missing'})
-    return
-  }
+//   if (!body.name || !body.number) {
+//     res.status(400).json({ error: 'Name or number is missing'})
+//     return
+//   }
 
-  if (phonebookEntries.some(entry => entry.name === body.name)) {
-    res.status(400).json({ error: 'name must be unique'})
-  }
+//   if (phonebookEntries.some(entry => entry.name === body.name)) {
+//     res.status(400).json({ error: 'name must be unique'})
+//   }
 
-  const newContact: Contact = {
-    id: generateId(),
-    name: body.name,
-    number: body.number
-  }
+//   const newContact: Contact = {
+//     id: generateId(),
+//     name: body.name,
+//     number: body.number
+//   }
 
-  phonebookEntries.push(newContact)
-  res.status(201).json(newContact)
-})
+//   phonebookEntries.push(newContact)
+//   res.status(201).json(newContact)
+// })
 
 // Start the server
 app.listen(PORT, () => {
