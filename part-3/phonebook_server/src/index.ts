@@ -48,10 +48,6 @@ export interface Contact {
 //   }
 // ]
 
-const generateId = (): string => {
-  return `${Date.now()}-${Math.random()*10000}`
-}
-
 
 // Routes
 app.get('/info', (req: Request, res: Response) => {
@@ -68,48 +64,82 @@ app.get('/info', (req: Request, res: Response) => {
 app.get('/api/persons', (req: Request, res: Response<Contact[]>) => {
   Contact.find({}).then(contacts => res.json(contacts.map(contact => (
     mapIContactToContact(contact)
-  ))))
+  )))).catch(error => {
+    console.log(error)
+  })
   })
 
-// app.get('/api/persons/:id', (req: Request<{ id: string}>, res: Response<Contact>) => {
-//   const id = req.params.id
-//   const person = phonebookEntries.find(person => person.id === id)
-//   if (person) {
-//     res.json(person)
-//   } else {
-//     res.statusMessage = "There is no person that matches this id"
-//     res.status(404).end()
-//   }
-// })
+app.get('/api/persons/:id', (req: Request<{ id: string}>, res: Response<Contact>) => {
+  const id = req.params.id
+  Contact.findById(id).then(contact => {
+          res.json(mapIContactToContact(contact!));
+      })
+      .catch(error => {
+        console.log(error);
+        res.statusMessage = "An error occurred while fetching the contact";
+        res.status(500).end();
+      })
+})
+      
 
-// app.delete('/api/persons/:id', (req: Request, res: Response) => {
-//   const id = req.params.id
-//   phonebookEntries = phonebookEntries.filter(person => person.id !== id)
+app.delete('/api/persons/:id', (req: Request, res: Response) => {
+  const id = req.params.id
+  Contact.findByIdAndDelete(id).then(result => res.status(204).end())
+})
 
-//   res.status(204).end()
-// })
+app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, res: Response<Contact | { error: string }>): void => {
+  const body = req.body
 
-// app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, res: Response<Contact | { error: string }>): void => {
-//   const body = req.body
+  if (!body.name || !body.number) {
+    res.status(400).json({ error: 'Name or number is missing'})
+    return;
+  }
 
-//   if (!body.name || !body.number) {
-//     res.status(400).json({ error: 'Name or number is missing'})
-//     return
-//   }
+  Contact.findOne({ name: body.name }).then(existingContact => {
+    if (existingContact) {
+      res.status(400).json({ error: 'Name must be unique' });
+      return;
+    }
 
-//   if (phonebookEntries.some(entry => entry.name === body.name)) {
-//     res.status(400).json({ error: 'name must be unique'})
-//   }
+    const newContact = new Contact({
+      name: body.name,
+      number: body.number
+    });
 
-//   const newContact: Contact = {
-//     id: generateId(),
-//     name: body.name,
-//     number: body.number
-//   }
+    newContact.save().then(result => res.status(201).json(mapIContactToContact(result)))
+      .catch(error => {
+        console.log(error);
+        res.status(500).json({ error: 'An error occurred while saving the contact' });
+      });
+  }).catch(error => {
+    console.log(error);
+    res.status(500).json({ error: 'An error occurred while checking for existing contact' });
+  });
+})
 
-//   phonebookEntries.push(newContact)
-//   res.status(201).json(newContact)
-// })
+app.put('/api/persons/:id', (req: Request, res: Response<Contact | {error: string}>) => {
+  const id = req.params.id;
+  const body = req.body;
+
+  if (!body.name || !body.number) {
+    res.status(400).json({ error: 'Name or number is missing' });
+    return;
+  }
+
+  Contact.findByIdAndUpdate(id,
+    { name: body.name, number: body.number },
+    { new: true, runValidators: true, context: 'query' }
+  ).then(updatedContact => {
+      if (updatedContact) {
+        res.json(mapIContactToContact(updatedContact));
+      } else {
+        res.status(404).json({ error: 'Contact not found' });
+      }
+    }).catch(error => {
+      console.log(error);
+      res.status(500).json({ error: 'An error occurred while updating the contact' });
+    });
+})
 
 // Start the server
 app.listen(PORT, () => {
