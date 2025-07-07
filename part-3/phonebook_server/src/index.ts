@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import Contact from './models/contact';
 import { mapIContactToContact } from './models/contacts-typeswap';
 const morgan = require('morgan')
@@ -61,33 +61,31 @@ app.get('/info', (req: Request, res: Response) => {
     `)
 })
 
-app.get('/api/persons', (req: Request, res: Response<Contact[]>) => {
+app.get('/api/persons', (req: Request, res: Response<Contact[]>, next: NextFunction) => {
   Contact.find({}).then(contacts => res.json(contacts.map(contact => (
     mapIContactToContact(contact)
-  )))).catch(error => {
-    console.log(error)
-  })
+  )))).catch(error => next(error))
   })
 
-app.get('/api/persons/:id', (req: Request<{ id: string}>, res: Response<Contact>) => {
+app.get('/api/persons/:id', (req: Request<{ id: string}>, res: Response<Contact | {error: string}>, next: NextFunction) => {
   const id = req.params.id
   Contact.findById(id).then(contact => {
-          res.json(mapIContactToContact(contact!));
+    if (contact) {
+      res.json(mapIContactToContact(contact));
+    } else {
+      res.status(404).end()
+    }
       })
-      .catch(error => {
-        console.log(error);
-        res.statusMessage = "An error occurred while fetching the contact";
-        res.status(500).end();
-      })
+      .catch(error => next(error))
 })
       
 
-app.delete('/api/persons/:id', (req: Request, res: Response) => {
+app.delete('/api/persons/:id', (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id
-  Contact.findByIdAndDelete(id).then(result => res.status(204).end())
+  Contact.findByIdAndDelete(id).then(result => res.status(204).end()).catch(error => next(error))
 })
 
-app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, res: Response<Contact | { error: string }>): void => {
+app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, res: Response<Contact | { error: string }>, next: NextFunction): void => {
   const body = req.body
 
   if (!body.name || !body.number) {
@@ -111,13 +109,10 @@ app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, r
         console.log(error);
         res.status(500).json({ error: 'An error occurred while saving the contact' });
       });
-  }).catch(error => {
-    console.log(error);
-    res.status(500).json({ error: 'An error occurred while checking for existing contact' });
-  });
+  }).catch(error => next(error));
 })
 
-app.put('/api/persons/:id', (req: Request, res: Response<Contact | {error: string}>) => {
+app.put('/api/persons/:id', (req: Request, res: Response<Contact | {error: string}>, next: NextFunction) => {
   const id = req.params.id;
   const body = req.body;
 
@@ -135,11 +130,22 @@ app.put('/api/persons/:id', (req: Request, res: Response<Contact | {error: strin
       } else {
         res.status(404).json({ error: 'Contact not found' });
       }
-    }).catch(error => {
-      console.log(error);
-      res.status(500).json({ error: 'An error occurred while updating the contact' });
-    });
+    }).catch(error => next(error));
 })
+
+
+const errorHandler = (error: Error, request: Request, response: Response, next: NextFunction) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    response.status(400).json({ error: 'malformatted id'})
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
+
 
 // Start the server
 app.listen(PORT, () => {
