@@ -63,19 +63,27 @@ const App = () => {
 
     const handleAdd = () => {
       const newPerson = { name: newName.trim(), number: newPhoneNumber.trim()};
-      contactServices.add(newPerson).then(data => setPersons([...persons, data]))
+      contactServices.add(newPerson).then(data => {
+        setPersons([...persons, data])
+        console.log(data)
+      })
+
       pushNotification(`Added ${newPerson.name}`)
+    }
+
+    if (!newName.trim() || !newPhoneNumber.trim()) {
+      pushNotification('Name and phone number cannot be empty', true);
+      return;
     }
 
     if (persons.some((person) => person.name.trim() === newName.trim())) { // Here I use trim to make sure that if a name with space(s) on the end won't result in a new contact
       if (window.confirm(`${newName.trim()} is already added to the phonebook, replace the old number with a new one?`)) {      
-        handleUpdate()
+      handleUpdate();
       } else {
-        return
+      return;
       }
-
     } else {
-      handleAdd()
+      handleAdd();
     }
 
     setNewName('');
