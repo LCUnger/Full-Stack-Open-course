@@ -28,10 +28,20 @@ export interface IContact extends Document {
   __v: number;
 }
 
+// Validate phone number
+const numberValidator = (val: string): boolean => {
+  const phoneRegex = /^[0-9]{2,3}-[0-9]+$/
+  return phoneRegex.test(val)
+}
+
 // Define the schema with proper types
 const contactSchema: Schema<IContact> = new mongoose.Schema({
   name: { type: String, minlength: 3, required: true },
-  number: { type: String, required: true },
+  number: { type: String, minlength: 8, validate: {
+    validator: numberValidator,
+    message: (props) => `${props.value} is not a valid phone number! Format: 2-3 digits, dash (-), followed by digits. Example: "123-456789".`
+  },
+  required: true },
 });
 
 // Transform the JSON output
