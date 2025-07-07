@@ -8,10 +8,8 @@ const express_1 = __importDefault(require("express"));
 const contact_1 = __importDefault(require("./models/contact"));
 const contacts_typeswap_1 = require("./models/contacts-typeswap");
 const morgan = require('morgan');
-console.log('test 1');
 const app = (0, express_1.default)();
 const PORT = process.env.PORT;
-console.log('test 2');
 app.use(express_1.default.static('dist'));
 app.use(express_1.default.json());
 morgan.token('content', (req, res) => {
@@ -85,10 +83,7 @@ app.post('/api/persons', (req, res, next) => {
             number: body.number
         });
         newContact.save().then(result => res.status(201).json((0, contacts_typeswap_1.mapIContactToContact)(result)))
-            .catch(error => {
-            console.log(error);
-            res.status(500).json({ error: 'An error occurred while saving the contact' });
-        });
+            .catch(error => next(error));
     }).catch(error => next(error));
 });
 app.put('/api/persons/:id', (req, res, next) => {
@@ -111,11 +106,15 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message);
     if (error.name === 'CastError') {
         response.status(400).json({ error: 'malformatted id' });
+        return;
+    }
+    else if (error.name === 'ValidationError') {
+        response.status(400).json({ error: error.message });
+        return;
     }
     next(error);
 };
 app.use(errorHandler);
-console.log('test 3');
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on p0rt ${PORT}`);

@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 mongoose_1.default.set('strictQuery', false);
 const url = process.env.MONGODB_URI;
-console.log('mongoose test 1');
 if (!url) {
     throw new Error('MONGODB_URI environment variable is not defined');
 }
@@ -19,10 +18,19 @@ mongoose_1.default
     .catch((error) => {
     console.error('error connecting to MongoDB:', error.message);
 });
+// Validate phone number
+const numberValidator = (val) => {
+    const phoneRegex = /^[0-9]{2,3}-[0-9]+$/;
+    return phoneRegex.test(val);
+};
 // Define the schema with proper types
 const contactSchema = new mongoose_1.default.Schema({
-    name: { type: String, required: true },
-    number: { type: String, required: true },
+    name: { type: String, minlength: 3, required: true },
+    number: { type: String, minlength: 8, validate: {
+            validator: numberValidator,
+            message: (props) => `${props.value} is not a valid phone number! Format: 2-3 digits, dash (-), followed by digits. Example: "123-456789".`
+        },
+        required: true },
 });
 // Transform the JSON output
 contactSchema.set('toJSON', {
