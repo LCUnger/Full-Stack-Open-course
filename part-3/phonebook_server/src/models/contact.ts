@@ -5,6 +5,8 @@ mongoose.set('strictQuery', false);
 
 const url: string | undefined = process.env.MONGODB_URI;
 
+console.log('mongoose test 1')
+
 if (!url) {
   throw new Error('MONGODB_URI environment variable is not defined');
 }

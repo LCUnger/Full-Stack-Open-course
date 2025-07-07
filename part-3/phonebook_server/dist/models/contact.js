@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 mongoose_1.default.set('strictQuery', false);
 const url = process.env.MONGODB_URI;
+console.log('mongoose test 1');
 if (!url) {
     throw new Error('MONGODB_URI environment variable is not defined');
 }

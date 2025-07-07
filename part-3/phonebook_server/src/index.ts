@@ -5,8 +5,12 @@ import Contact from './models/contact';
 import { mapIContactToContact } from './models/contacts-typeswap';
 const morgan = require('morgan')
 
+console.log('test 1')
+
 const app = express();
 const PORT = process.env.PORT
+
+console.log('test 2')
 
 
 app.use(express.static('dist'))
@@ -145,6 +149,8 @@ const errorHandler = (error: Error, request: Request, response: Response, next: 
 }
 
 app.use(errorHandler)
+
+console.log('test 3')
 
 
 // Start the server
