@@ -46,16 +46,15 @@ const App = () => {
       const existingPerson: Person = persons.find(person => person.name.trim() === newName.trim())!
       const adjustedPerson: Person = { ...existingPerson, number: newPhoneNumber}!
 
-      contactServices.update(adjustedPerson).then(data => (
+      contactServices.update(adjustedPerson).then(data => {
           setPersons(persons.map(person => person.id === existingPerson.id ? data : person))
-        ))
+          setNewName('');
+          setNewPhoneNumber('');
+      })
         .catch(error => {
-          if (error.status === 404) {
-            pushNotification(`Information of ${existingPerson.name} has already been removed from the server`, true);
-            setPersons(persons.filter(person => person.id !== existingPerson.id));
-          } else {
-            pushNotification(`Not yet handled error`, true)
-          }
+          console.error(error.response.data.error)
+          pushNotification(`${error.response.data.error}`, true)
+          return
         })
 
       pushNotification(`Changed number of ${existingPerson.name} from +${existingPerson.number} to +${adjustedPerson.number}`)
@@ -66,14 +65,15 @@ const App = () => {
       contactServices.add(newPerson).then(data => {
         setPersons([...persons, data])
         console.log(data)
+        setNewName('');
+        setNewPhoneNumber('');
+      }).catch(error => {
+        console.error(error.response.data.error)
+        pushNotification(`${error.response.data.error}`, true)
+        return
       })
 
       pushNotification(`Added ${newPerson.name}`)
-    }
-
-    if (!newName.trim() || !newPhoneNumber.trim()) {
-      pushNotification('Name and phone number cannot be empty', true);
-      return;
     }
 
     if (persons.some((person) => person.name.trim() === newName.trim())) { // Here I use trim to make sure that if a name with space(s) on the end won't result in a new contact
@@ -85,9 +85,6 @@ const App = () => {
     } else {
       handleAdd();
     }
-
-    setNewName('');
-    setNewPhoneNumber('');
   }
 
   const removeContact = (id: string | number) => {

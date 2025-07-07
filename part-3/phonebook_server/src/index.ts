@@ -104,10 +104,7 @@ app.post('/api/persons', (req: Request<{},{},{ name: string, number: string}>, r
     });
 
     newContact.save().then(result => res.status(201).json(mapIContactToContact(result)))
-      .catch(error => {
-        console.log(error);
-        res.status(500).json({ error: 'An error occurred while saving the contact' });
-      });
+      .catch(error => next(error));
   }).catch(error => next(error));
 })
 
@@ -138,6 +135,10 @@ const errorHandler = (error: Error, request: Request, response: Response, next: 
 
   if (error.name === 'CastError') {
     response.status(400).json({ error: 'malformatted id'})
+    return
+  } else if (error.name === 'ValidationError') {
+    response.status(400).json({ error: error.message})
+    return
   }
 
   next(error)

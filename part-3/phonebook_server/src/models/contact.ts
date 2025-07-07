@@ -30,7 +30,7 @@ export interface IContact extends Document {
 
 // Define the schema with proper types
 const contactSchema: Schema<IContact> = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String, minlength: 3, required: true },
   number: { type: String, required: true },
 });
 
