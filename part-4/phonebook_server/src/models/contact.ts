@@ -1,25 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
-import config from '../utils/config'
-
 mongoose.set('strictQuery', false)
-
-const url: string | undefined = config.MONGODB_URI
-
-if (!url) {
-  throw new Error('MONGODB_URI environment variable is not defined')
-}
-
-console.log('connecting to', url)
-
-mongoose
-  .connect(url)
-  .then(() => {
-    console.log('connected to MongoDB')
-  })
-  .catch((error: Error) => {
-    console.error('error connecting to MongoDB:', error.message)
-  })
 
 // Define the TypeScript interface for a Contact document
 export interface IContact extends Document {
@@ -55,5 +36,5 @@ contactSchema.set('toJSON', {
 })
 
 // Export the model with proper types
-const Contact: Model<IContact> = mongoose.model<IContact>('Contact', contactSchema)
-export default Contact
+const ContactDB: Model<IContact> = mongoose.model<IContact>('Contact', contactSchema)
+export default ContactDB
