@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express'
-import ContactDB from '../models/contact'
+import ContactDB from '../models/contactDB'
 
 import { mapIContactToContact } from '../models/contacts-typeswap'
 import type { Contact } from '../types/contact-types'
