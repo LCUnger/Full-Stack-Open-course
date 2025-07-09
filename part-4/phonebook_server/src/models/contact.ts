@@ -1,8 +1,10 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
+import config from '../utils/config'
+
 mongoose.set('strictQuery', false)
 
-const url: string | undefined = process.env.MONGODB_URI
+const url: string | undefined = config.MONGODB_URI
 
 if (!url) {
   throw new Error('MONGODB_URI environment variable is not defined')

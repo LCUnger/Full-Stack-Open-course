@@ -1,4 +1,4 @@
-import type { ContactDB } from '../index'
+import type { Contact } from '../index'
 import type { IContact } from './contact'
 
 const mapIContactToContact = (inObj: IContact): ContactDB => {

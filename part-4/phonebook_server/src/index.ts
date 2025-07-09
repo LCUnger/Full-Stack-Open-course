@@ -1,13 +1,12 @@
-import dotenv from 'dotenv'
-dotenv.config()
-
 import express, { NextFunction, Request, Response } from 'express'
+
+import config from './utils/config'
+
 import ContactDB from './models/contact'
 import { mapIContactToContact } from './models/contacts-typeswap'
 import morgan from 'morgan'
 
 const app = express()
-const PORT = process.env.PORT
 
 app.use(express.static('dist'))
 app.use(express.json())
@@ -124,6 +123,6 @@ const errorHandler = (error: Error, request: Request, response: Response, next: 
 app.use(errorHandler)
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on p0rt ${PORT}`)
+app.listen(config.PORT, () => {
+  console.log(`Server is running on p0rt ${config.PORT}`)
 })
