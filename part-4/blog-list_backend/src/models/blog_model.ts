@@ -1,17 +1,9 @@
 import mongoose from 'mongoose'
 import type { Document, Schema } from 'mongoose'
 
+import type { DbBlogType } from '../types/blog'
+
 mongoose.set('strictQuery', false)
-
-export interface BlogType {
-  title: string;
-  author: string;
-  url: string;
-  likes: number;
-}
-
-export interface DbBlogType extends BlogType, Document {}
-
 
 const blogSchema: Schema<DbBlogType> = new mongoose.Schema({
   title: String,

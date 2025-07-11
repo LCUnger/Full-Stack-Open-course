@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express'
-import type { BlogType } from '../models/blog_model'
+import type { BlogType } from '../types/blog'
 
 import Blog from '../models/blog_model'
 
