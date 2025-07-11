@@ -6,4 +6,10 @@ const dummy = (blogs) => {
 const totalLikes = (blogs) => {
     return blogs.reduce((sum, val) => sum + val.likes, 0);
 };
-exports.default = { dummy, totalLikes };
+const favoriteBlog = (blogs) => {
+    if (blogs.length === 0) {
+        throw new Error("No blogs available");
+    }
+    return blogs.reduce((favorite, blog) => blog.likes > favorite.likes ? blog : favorite);
+};
+exports.default = { dummy, totalLikes, favoriteBlog };
