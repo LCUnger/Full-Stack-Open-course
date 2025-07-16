@@ -23,6 +23,14 @@ const listWithOneBlog = [
 ];
 const blogs = [
     {
+        _id: "5a422bc61b54a676234d17fc",
+        title: "Type wars",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+        likes: 2,
+        __v: 0
+    },
+    {
         _id: "5a422a851b54a676234d17f7",
         title: "React patterns",
         author: "Michael Chan",
@@ -61,14 +69,6 @@ const blogs = [
         url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
         likes: 0,
         __v: 0
-    },
-    {
-        _id: "5a422bc61b54a676234d17fc",
-        title: "Type wars",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-        likes: 2,
-        __v: 0
     }
 ];
 (0, node_test_1.describe)('total likes', () => {
@@ -106,6 +106,15 @@ const blogs = [
             url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
             likes: 12,
             __v: 0
+        });
+    });
+});
+(0, node_test_1.describe)('most blogs', () => {
+    (0, node_test_1.test)('find author with most blogs', () => {
+        const result = list_helper_1.default.mostBlogs(blogs);
+        node_assert_1.default.deepStrictEqual(result, {
+            author: "Robert C. Martin",
+            blogs: 3
         });
     });
 });

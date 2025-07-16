@@ -1,4 +1,6 @@
+import blogsRouter from "../controllers/blogs_router"
 import type { BlogType } from "../types/blog"
+import ld from 'lodash'
 
 const dummy = (blogs: BlogType[]) => {
   return 1
@@ -18,4 +20,16 @@ const favoriteBlog = (blogs: BlogType[]): BlogType => {
   );
 }
 
-export default { dummy, totalLikes, favoriteBlog }
+const mostBlogs = (blogs: BlogType[]): { author: string, blogs: number } => {
+  const blogsPerAuthor = ld.countBy(blogs, 'author')
+  const authorWithMostBlogs = ld.maxBy(Object.entries(blogsPerAuthor), ([author, count]) => count);
+
+  if (!authorWithMostBlogs) {
+    return { author: '', blogs: 0 };
+  }
+
+  return { author: authorWithMostBlogs[0], blogs: authorWithMostBlogs[1] };
+}
+
+
+export default { dummy, totalLikes, favoriteBlog, mostBlogs }
