@@ -18,13 +18,19 @@ const favoriteBlog = (blogs) => {
 };
 const mostBlogs = (blogs) => {
     const blogsPerAuthor = lodash_1.default.countBy(blogs, 'author');
-    console.log(Object.entries(blogsPerAuthor));
     const authorWithMostBlogs = lodash_1.default.maxBy(Object.entries(blogsPerAuthor), ([author, count]) => count);
-    console.log(authorWithMostBlogs);
     if (!authorWithMostBlogs) {
         return { author: '', blogs: 0 };
     }
     return { author: authorWithMostBlogs[0], blogs: authorWithMostBlogs[1] };
-    return { author: '', blogs: 0 };
 };
-exports.default = { dummy, totalLikes, favoriteBlog, mostBlogs };
+const mostLikes = (blogs) => {
+    const blogsGrouped = lodash_1.default.groupBy(blogs, 'author');
+    const likesPerAuthor = lodash_1.default.mapValues(blogsGrouped, (authorsBlogs) => authorsBlogs.reduce((sum, blog) => sum + blog.likes, 0));
+    const authorWithMostLikes = lodash_1.default.maxBy(Object.entries(likesPerAuthor), ([, likes]) => likes);
+    if (!authorWithMostLikes) {
+        return { author: '', likes: 0 };
+    }
+    return { author: authorWithMostLikes[0], likes: authorWithMostLikes[1] };
+};
+exports.default = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes };

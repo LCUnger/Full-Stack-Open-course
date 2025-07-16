@@ -31,5 +31,16 @@ const mostBlogs = (blogs: BlogType[]): { author: string, blogs: number } => {
   return { author: authorWithMostBlogs[0], blogs: authorWithMostBlogs[1] };
 }
 
+const mostLikes = (blogs: BlogType[]): { author: string, likes: number } => {
+  const blogsGrouped = ld.groupBy(blogs, 'author')
+  const likesPerAuthor = ld.mapValues(blogsGrouped, (authorsBlogs) => authorsBlogs.reduce((sum, blog) => sum + blog.likes, 0))
+  const authorWithMostLikes = ld.maxBy(Object.entries(likesPerAuthor), ([, likes]) => likes)
 
-export default { dummy, totalLikes, favoriteBlog, mostBlogs }
+  if (!authorWithMostLikes) {
+    return {author: '', likes: 0}
+  }
+
+  return { author: authorWithMostLikes[0], likes: authorWithMostLikes[1]}
+}
+
+export default { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes }
