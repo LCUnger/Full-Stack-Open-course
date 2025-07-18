@@ -35,12 +35,8 @@ test('a valid blog can be added', async () => {
 
 
   const response = await api.get('/api/blogs')
-
-  const contents = response.body.map((e:any) => e.content)
-
   assert.strictEqual(response.body.length, helper.initialBlogs.length+1)
 })
-
 
 test('blogs are returned as json', async () => {
   await api.get('/api/blogs')
@@ -48,7 +44,12 @@ test('blogs are returned as json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
-test
+test('unique identifier property is named id', async () => {
+  const response = await api.get('/api/blogs')
+  const blog = response.body[0]
+  assert.ok(blog.id, 'blog does not have id property')
+  assert.strictEqual(blog._id, undefined, '_id should not be an attribute of the blog object')
+})
 
 test('all notes are returned', async () => {
   const response = await api.get('/api/blogs')
