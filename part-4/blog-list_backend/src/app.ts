@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import config from './utils/config'
 import logger from './utils/logger'
 import blogsRouter from './controllers/blogs_router'
+import middleware from './utils/middleware'
 
 const app = express()
 
@@ -20,6 +21,8 @@ mongoose
 app.use(express.json())
 
 app.use('/api/blogs', blogsRouter)
+
+app.use(middleware.errorHandler)
 
 
 export default app

@@ -38,6 +38,18 @@ test('a valid blog can be added', async () => {
   assert.deepStrictEqual(blogs.find((blog: BlogType) => blog.id === expectedBlog.id), expectedBlog, 'The uploaded blog is not found in the database')
 })
 
+test('blogs are returned as json', async () => {
+  await api.get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+})
+
+test('all notes are returned', async () => {
+  const response = await api.get('/api/blogs')
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length)
+})
+
 test('likes property of added blog defaults to 0 if not given', async () => {
   const newBlog = {
     title: "Coffeee",
@@ -55,12 +67,6 @@ test('likes property of added blog defaults to 0 if not given', async () => {
   assert.strictEqual(postedBlog.likes, 0, "The uploaded blog without a like property didn't default to 0")
 })
 
-test('blogs are returned as json', async () => {
-  await api.get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-})
-
 test('unique identifier property is named id', async () => {
   const response = await api.get('/api/blogs')
   const blog = response.body[0]
@@ -68,10 +74,30 @@ test('unique identifier property is named id', async () => {
   assert.strictEqual(blog._id, undefined, '_id should not be an attribute of the blog object')
 })
 
-test('all notes are returned', async () => {
-  const response = await api.get('/api/blogs')
+test('test if creating a new blog without title or url responds with status code 400 bad request', async () => {
+  const blogWithoutTitle = {
+    author: "James Hoffman",
+    url: "example.com"
+  }
 
-  assert.strictEqual(response.body.length, helper.initialBlogs.length)
+  const blogWithoutUrl ={
+    title: "Coffee",
+    author: "James Hoffman",
+  }
+
+  const responseNoTitle = await api
+    .post('/api/blogs')
+    .send(blogWithoutTitle)
+    .expect(400)
+
+  try {
+    const responseNoUrl = await api
+      .post('/api/blogs')
+      .send(blogWithoutUrl)
+      .expect(400)
+  } catch (error:any) {
+    console.log("error: ",error.name as any)
+  }
 })
 
 
