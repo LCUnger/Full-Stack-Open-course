@@ -3,6 +3,7 @@ export interface BlogType {
   author: string;
   url: string;
   likes: number;
+  id?: string;
 }
 
 export interface DbBlogType extends BlogType, Document {}
