@@ -7,7 +7,7 @@ import Blog from '../models/blog_model'
 import helper from './blog_api_helper'
 
 
-import type { DbBlogType } from '../types/blog'
+import type { BlogType } from '../types/blog'
 
 const api = supertest(app)
 
@@ -19,23 +19,23 @@ beforeEach(async () => {
 
 test('a valid blog can be added', async () => {
   const newBlog = {
-    _id: "3a822bc61b54b897534d17fc",
     title: "Coffeee",
     author: "James Hoffman",
     url: "url here",
     likes: 1,
-    __v: 0
   }
-
-  await api
+  const post = await api
     .post('/api/blogs')
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-
   const response = await api.get('/api/blogs')
+  const blogs = response.body
   assert.strictEqual(response.body.length, helper.initialBlogs.length+1)
+  
+  const expectedBlog = { ...newBlog, id: post.body.id }
+  assert.deepStrictEqual(blogs.find((blog: BlogType) => blog.id === expectedBlog.id), expectedBlog, 'The uploaded blog is not found in the database')
 })
 
 test('blogs are returned as json', async () => {
