@@ -38,6 +38,23 @@ test('a valid blog can be added', async () => {
   assert.deepStrictEqual(blogs.find((blog: BlogType) => blog.id === expectedBlog.id), expectedBlog, 'The uploaded blog is not found in the database')
 })
 
+test('likes property of added blog defaults to 0 if not given', async () => {
+  const newBlog = {
+    title: "Coffeee",
+    author: "James Hoffman",
+    url: "url here",
+  }
+
+  const post = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const postedBlog = post.body
+  assert.strictEqual(postedBlog.likes, 0, "The uploaded blog without a like property didn't default to 0")
+})
+
 test('blogs are returned as json', async () => {
   await api.get('/api/blogs')
     .expect(200)
