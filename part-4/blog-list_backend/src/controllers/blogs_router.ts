@@ -6,19 +6,23 @@ import Blog from '../models/blog_model'
 
 const blogsRouter = express.Router()
 
-blogsRouter.get('/', async (request, response: Response<DbBlogType[]>) => {
-  const blogs = await Blog.find({})
-  response.json(blogs)
+blogsRouter.get('/', async (request, response: Response<DbBlogType[]>, next: NextFunction) => {
+  try {
+    const blogs = await Blog.find({})
+    response.json(blogs)
+  } catch (error) {
+    next(error)
+  }
 })
 
-blogsRouter.post('/', (request: Request<{}, {}, BlogType>, response: Response, next: NextFunction) => {
-  const blog = new Blog(request.body)
-
-  blog.save()
-    .then((result) => {
-      response.status(201).json(result)
-    })
-    .catch((error) => next(error))
+blogsRouter.post('/', async (request: Request<{}, {}, BlogType>, response: Response, next: NextFunction) => {
+  try {
+    const blog = new Blog(request.body)
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)
+  } catch (error) {
+    next(error)
+  }
 })
 
 export default blogsRouter
