@@ -14,10 +14,7 @@ const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  for (const blog of helper.initialBlogs) {
-    const blogObject = new Blog(blog)
-    await blogObject.save()
-  }
+  await Blog.insertMany(helper.initialBlogs)
 })
 
 test('a valid blog can be added', async () => {
@@ -51,14 +48,7 @@ test('blogs are returned as json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
-test('blog without ')
-
-test('a specific blog is within the returned notes', async () => {
-  const response = await api.get('/api/blogs')
-
-  const contents = response.body.map((e:any) => e.content)
-
-})
+test
 
 test('all notes are returned', async () => {
   const response = await api.get('/api/blogs')
