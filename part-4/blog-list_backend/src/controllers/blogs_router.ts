@@ -11,7 +11,7 @@ blogsRouter.get('/', async (request, response: Response<DbBlogType[]>) => {
   response.json(blogs)
 })
 
-blogsRouter.post('/', async (request: Request<{}, {}, BlogType>, response: Response, next: NextFunction) => {
+blogsRouter.post('/', (request: Request<{}, {}, BlogType>, response: Response, next: NextFunction) => {
   const blog = new Blog(request.body)
 
   blog.save()
