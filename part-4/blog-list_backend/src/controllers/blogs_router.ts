@@ -1,11 +1,12 @@
 import express, { Request, Response, NextFunction } from 'express'
 import type { BlogType } from '../types/blog'
+import type { DbBlogType } from '../types/blog'
 
 import Blog from '../models/blog_model'
 
 const blogsRouter = express.Router()
 
-blogsRouter.get('/', (request, response) => {
+blogsRouter.get('/', (request, response: Response<DbBlogType[]>) => {
   Blog.find({}).then((blogs) => {
     response.json(blogs)
   })
