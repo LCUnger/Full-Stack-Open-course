@@ -100,6 +100,34 @@ test('test if creating a new blog without title or url responds with status code
   }
 })
 
+test('delete existing item', async () => {
+  const newBlog = {
+    title: "Coffeee",
+    author: "James Hoffman",
+    url: "url here",
+    likes: 1,
+  }
+  const postResponse = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const deleteResponse = await api
+    .delete(`/api/blogs/${postResponse.body.id}`)
+    .expect(204)
+
+  const getResponse = await api
+    .get('/api/blogs')
+
+  const blogs = getResponse.body
+
+  assert.strictEqual(
+    blogs.find((blog: BlogType) => blog.id === postResponse.body.id),
+    undefined,
+    'The deleted blog is still present in the database')
+  
+})
 
 after(async () => {
   await mongoose.connection.close()
