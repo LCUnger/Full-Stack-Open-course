@@ -1,6 +1,12 @@
+export interface UserEntryType {
+  username: string,
+  password: string,
+  name: string,
+}
+
 export interface UserType {
   username: string
-  password: string
+  passwordHash?: string
   name: string
 }
 
