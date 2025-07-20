@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express'
-import type { BlogType } from '../types/blog'
-import type { DbBlogType } from '../types/blog'
+import type { BlogType } from '../types/blog_types'
+import type { DbBlogType } from '../types/blog_types'
 
 import Blog from '../models/blog_model'
 

@@ -2,7 +2,7 @@ import { test, describe } from 'node:test'
 import assert from 'node:assert'
 import listHelper from '../utils/list_helper'
 
-import { BlogType } from '../types/blog'
+import { BlogType } from '../types/blog_types'
 import blogsRouter from '../controllers/blogs_router'
 
 test('dummy returns one', () => {

@@ -7,7 +7,7 @@ import Blog from '../models/blog_model'
 import helper from './blog_api_helper'
 
 
-import type { BlogType } from '../types/blog'
+import type { BlogType } from '../types/blog_types'
 
 const api = supertest(app)
 
