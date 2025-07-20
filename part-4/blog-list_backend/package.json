@@ -7,6 +7,7 @@
     "build": "tsc",
     "test_blogs": "npm run build && cross-env NODE_ENV=test node --test dist/tests/blog_api.test.js",
     "test_users": "npm run build && cross-env NODE_ENV=test node --test dist/tests/user_api.test.js",
+    "test_server": "cross-env NODE_ENV=test ts-node-dev src/index.ts --watch",
     "dev": "cross-env NODE_ENV=development ts-node-dev src/index.ts --watch",
     "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",
     "lint": "eslint ."
