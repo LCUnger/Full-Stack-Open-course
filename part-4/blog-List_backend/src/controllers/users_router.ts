@@ -16,7 +16,7 @@ userRouter.post('/', async (request: Request<{},{},UserEntryType>, response, nex
     const user = new User({
       username: userEntry.username,
       name: userEntry.name,
-      passwordHash: passwordhash
+      passwordHash: passwordhash,
     })
 
     const savedUser = await user.save()
@@ -29,7 +29,7 @@ userRouter.post('/', async (request: Request<{},{},UserEntryType>, response, nex
 
 userRouter.get('/', async (request, response, next) => {
   try {
-    const users = User.find({})
+    const users = await User.find({})
     response.json(users)
   } catch (error) {
     next(error)

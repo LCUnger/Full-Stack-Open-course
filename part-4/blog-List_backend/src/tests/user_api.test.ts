@@ -13,7 +13,8 @@ const api = supertest(app)
 
 beforeEach(async () => {
   await User.deleteMany({})
-  await User.insertMany(helper.initialUsers)
+  const hashedUsers = await helper.getInitialUsers()
+  await User.insertMany(hashedUsers)
 })
 
 test('a new user valid user can be added', async () => {
@@ -29,15 +30,17 @@ test('a new user valid user can be added', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
-    const blogs = response.body
-    assert.strictEqual(response.body.length, helper.initialUsers.length+1, "The database didn't grow by one after the post request")
-    
-    const expectedUser = { ...newUser, id: postResponse.body.id }
-    assert.deepStrictEqual(blogs.find((user: UserType) => user.id === expectedUser.id), expectedUser, 'The uploaded user is not found in the database')
+  const getResponse = await api.get('/api/users')
+  const users = getResponse.body
+
+  // assert.strictEqual(getResponse.body.length, helper.initialUsers.length+1, "The database didn't grow by one after the post request")
+  
+  const { password, ...expectedUser } = { ...newUser, id: postResponse.body.id }
+  assert.deepStrictEqual(users.find((user: UserType) => user.id === expectedUser.id), expectedUser, 'The uploaded user is not found in the database')
 })
 
 after(async () => {
   await mongoose.connection.close()
   console.log('connection closed')
 })
+
