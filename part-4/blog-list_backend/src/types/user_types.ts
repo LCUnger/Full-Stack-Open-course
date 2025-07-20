@@ -8,6 +8,7 @@ export interface UserType {
   username: string
   passwordHash?: string
   name: string
+  id?: string
 }
 
 export interface DbUserType extends UserType, Document {}
