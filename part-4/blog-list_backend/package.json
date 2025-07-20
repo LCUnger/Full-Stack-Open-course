@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && cross-env NODE_ENV=test node --test dist/tests/blog_api.test.js",
+    "test_blogs": "npm run build && cross-env NODE_ENV=test node --test dist/tests/blog_api.test.js",
+    "test_users": "npm run build && cross-env NODE_ENV=test node --test dist/tests/user_api.test.js",
     "dev": "cross-env NODE_ENV=development ts-node-dev src/index.ts --watch",
     "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",
     "lint": "eslint ."
