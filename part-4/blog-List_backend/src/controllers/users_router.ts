@@ -27,4 +27,13 @@ userRouter.post('/', async (request: Request<{},{},UserEntryType>, response, nex
   }
 })
 
+userRouter.get('/', async (request, response, next) => {
+  try {
+    const users = User.find({})
+    response.json(users)
+  } catch (error) {
+    next(error)
+  }
+})
+
 export default userRouter
