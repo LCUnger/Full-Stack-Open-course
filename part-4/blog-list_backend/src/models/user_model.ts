@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
 import type { Schema } from 'mongoose'
 
 import type { DbUserType, UserType } from '../types/user_types'
@@ -35,3 +35,7 @@ userSchema.set('toJSON', {
     return obj
   }
 })
+
+const User = mongoose.model('User', userSchema)
+
+export default User

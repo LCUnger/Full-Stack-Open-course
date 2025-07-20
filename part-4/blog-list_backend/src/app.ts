@@ -6,6 +6,7 @@ import config from './utils/config'
 import logger from './utils/logger'
 import blogsRouter from './controllers/blogs_router'
 import middleware from './utils/middleware'
+import userRouter from './controllers/users_router'
 
 const app = express()
 
@@ -21,6 +22,10 @@ mongoose
 app.use(express.json())
 
 app.use('/api/blogs', blogsRouter)
+
+app.use('/api/users', userRouter)
+
+app.use(middleware.unknownEndpoint)
 
 app.use(middleware.errorHandler)
 
