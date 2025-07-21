@@ -1,7 +1,8 @@
 import express, { Request, Response, NextFunction } from 'express'
-import type { BlogType } from '../types/blog_types'
+import type { BlogEntryType, BlogType } from '../types/blog_types'
 import type { DbBlogType } from '../types/blog_types'
 
+import User from '../models/user_model'
 import Blog from '../models/blog_model'
 
 const blogsRouter = express.Router()
@@ -15,9 +16,16 @@ blogsRouter.get('/', async (request, response: Response<DbBlogType[]>, next: Nex
   }
 })
 
-blogsRouter.post('/', async (request: Request<{}, {}, BlogType>, response: Response, next: NextFunction) => {
+blogsRouter.post('/', async (request: Request<{}, {}, BlogEntryType>, response: Response, next: NextFunction) => {
   try {
-    const blog = new Blog(request.body)
+    const blogBody = request.body
+    const user = (await User.find({}))[0]
+
+    if (!user) {
+      return response.status(400).json({ error: 'missing user' }) //Edit message when specific user is searched.
+    }
+
+    const blog = new Blog({...blogBody, user: user._id})
     const savedBlog = await blog.save()
     response.status(201).json(savedBlog)
   } catch (error) {
