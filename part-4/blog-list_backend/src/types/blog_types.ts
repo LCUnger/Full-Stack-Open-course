@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+export interface BlogEntryType {
+  title: string;
+  author: string;
+  url: string;
+  likes?: number;
+}
+
 export interface BlogType {
   title: string;
   author: string;
