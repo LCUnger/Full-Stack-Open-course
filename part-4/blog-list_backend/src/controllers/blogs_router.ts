@@ -9,7 +9,7 @@ const blogsRouter = express.Router()
 
 blogsRouter.get('/', async (request, response: Response<DbBlogType[]>, next: NextFunction) => {
   try {
-    const blogs = await Blog.find({})
+    const blogs = await Blog.find({}).populate('user')
     response.json(blogs)
   } catch (error) {
     next(error)
@@ -25,8 +25,15 @@ blogsRouter.post('/', async (request: Request<{}, {}, BlogEntryType>, response: 
       return response.status(400).json({ error: 'missing user' }) //Edit message when specific user is searched.
     }
 
-    const blog = new Blog({...blogBody, user: user._id})
+    const blog = new Blog({
+      ...blogBody, 
+      user: user._id})
+
     const savedBlog = await blog.save()
+
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
+    
     response.status(201).json(savedBlog)
   } catch (error) {
     next(error)
