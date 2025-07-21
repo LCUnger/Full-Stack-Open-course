@@ -1,4 +1,4 @@
-import { test, after, beforeEach } from 'node:test'
+import { test, after, beforeEach, describe } from 'node:test'
 import assert from 'node:assert'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
@@ -42,5 +42,43 @@ test('a new user valid user can be added', async () => {
 after(async () => {
   await mongoose.connection.close()
   console.log('connection closed')
+})
+
+describe('entry validation', () => {
+  describe('password validation', () => {
+    test('password must be at least 3 characters long', async () => {
+      const invalidUser: UserEntryType = {
+        username: 'ShortPassUser',
+        name: 'Test User',
+        password: '12'
+      }
+
+      const response = await api
+        .post('/api/users')
+        .send(invalidUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+      assert.strictEqual(response.body.error, 'Password must be at least 3 characters long', 'Error message does not match expected validation error')
+      })
+  })
+
+  describe('username validation', () => {
+    test('user name must be at least 3 characters long', async () => {
+      const invalidUser: UserEntryType = {
+      username: 'ab',
+      name: 'Test User',
+      password: 'validPassword123'
+      }
+
+      const response = await api
+      .post('/api/users')
+      .send(invalidUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+      assert.strictEqual(response.body.error, 'User validation failed: username: Path `username` (`ab`) is shorter than the minimum allowed length (3).', 'Error message does not match expected validation error')
+    })
+  })
 })
 
