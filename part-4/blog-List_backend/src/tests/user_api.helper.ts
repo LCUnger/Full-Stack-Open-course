@@ -39,7 +39,7 @@ const getInitialUsers = async () => {
     initialUsersData.map(async (user) => ({
       username: user.username,
       name: user.name,
-      passwordHash: await bcrypt.hash(user.password, saltRounds) // Match your schema!
+      passwordHash: await bcrypt.hash(user.password, saltRounds)
     }))
   )
 }

@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../app'
 import Blog from '../models/blog_model'
-import helper from './blog_api_helper'
+import helper from './blog_api.helper'
 
 
 import type { BlogType } from '../types/blog_types'
@@ -34,7 +34,7 @@ test('a valid blog can be added', async () => {
   const blogs = response.body
   assert.strictEqual(response.body.length, helper.initialBlogs.length+1)
   
-  const expectedBlog = { ...newBlog, id: post.body.id }
+  const expectedBlog = { ...newBlog, id: post.body.id, user: post.body.user }
   assert.deepStrictEqual(blogs.find((blog: BlogType) => blog.id === expectedBlog.id), expectedBlog, 'The uploaded blog is not found in the database')
 })
 

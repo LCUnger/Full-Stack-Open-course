@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../app'
 import User from '../models/user_model'
-import helper from './user_api_helper'
+import helper from './user_api.helper'
 
 import type { UserEntryType, UserType } from '../types/user_types'
 
