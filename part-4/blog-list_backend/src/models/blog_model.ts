@@ -18,9 +18,9 @@ const blogSchema: Schema<DbBlogType> = new mongoose.Schema({
 
 blogSchema.set('toJSON', {
   transform: (document, returnedObject: BlogType & { _id?: mongoose.Types.ObjectId, __v?: number}) => {
-    returnedObject.id = returnedObject._id!.toString(); // Convert _id to id
-    delete returnedObject._id; // Remove _id
-    delete returnedObject.__v; // Remove __v
+    returnedObject.id = returnedObject._id!.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
   },
 });
 
