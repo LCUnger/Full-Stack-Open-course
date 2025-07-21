@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema<DbUserType>({
     required: true,
     unique: true,
     trim: true,
+    minlength: 3,
   },
   name: {
     type: String,

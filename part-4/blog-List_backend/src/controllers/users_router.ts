@@ -6,24 +6,29 @@ import User from '../models/user_model'
 
 const userRouter = express.Router()
 
-userRouter.post('/', async (request: Request<{},{},UserEntryType>, response, next: NextFunction) => {
+userRouter.post('/', async (request: Request<{}, {}, UserEntryType>, response, next: NextFunction) => {
   try {
-    const userEntry = request.body
+    const { username, name, password } = request.body;
 
-    const saltRounds = 10
-    const passwordhash = await bcrypt.hash(userEntry.password, saltRounds)
+    // Validate password length
+    if (!password || password.length < 3) {
+      return response.status(400).json({ error: 'Password must be at least 3 characters long' });
+    }
+
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
 
     const user = new User({
-      username: userEntry.username,
-      name: userEntry.name,
-      passwordHash: passwordhash,
-    })
+      username,
+      name,
+      passwordHash,
+    });
 
-    const savedUser = await user.save()
+    const savedUser = await user.save();
 
-    response.status(201).json(savedUser)
+    response.status(201).json(savedUser);
   } catch (error) {
-    next(error)
+    next(error);
   }
 })
 
