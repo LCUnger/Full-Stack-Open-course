@@ -12,7 +12,7 @@ export interface UserType {
   passwordHash?: string
   name: string
   id?: string
-  blogs?: mongoose.Types.ObjectId[]
+  blogs: mongoose.Types.ObjectId[]
 }
 
 export interface PopulatedUserType extends Omit<UserType, 'blogs'> {
