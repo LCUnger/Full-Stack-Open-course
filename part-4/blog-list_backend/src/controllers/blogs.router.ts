@@ -13,20 +13,12 @@ const blogsRouter = express.Router()
 
 blogsRouter.get('/', async (request, response: Response<DbBlogType[]>, next: NextFunction) => {
   try {
-    const blogs = await Blog.find({}).populate('user')
+    const blogs = await Blog.find({}).populate('user', {username: 1, name: 1})
     response.json(blogs)
   } catch (error) {
     next(error)
   }
 })
-
-const getToken = (request: Request) => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
 
 blogsRouter.post('/', async (request: Request, response: Response, next: NextFunction) => {
   try {
