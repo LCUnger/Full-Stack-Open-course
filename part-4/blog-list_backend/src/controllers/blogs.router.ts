@@ -1,9 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken'
+
 import type { BlogEntryType, BlogType } from '../types/blog.types'
 import type { DbBlogType } from '../types/blog.types'
 
 import User from '../models/user.model'
 import Blog from '../models/blog.model'
+import config from '../utils/config'
+import { TokenPayload } from '../types/token.types'
 
 const blogsRouter = express.Router()
 
@@ -16,13 +20,29 @@ blogsRouter.get('/', async (request, response: Response<DbBlogType[]>, next: Nex
   }
 })
 
+const getToken = (request: Request) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 blogsRouter.post('/', async (request: Request<{}, {}, BlogEntryType>, response: Response, next: NextFunction) => {
   try {
     const blogBody = request.body
-    const user = (await User.find({}))[0]
+
+    const token = getToken(request)
+
+    if (!token) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+    const decodedToken = jwt.verify(token, config.SECRET_KEY) as TokenPayload
+
+    const user = await User.findById(decodedToken.id)
 
     if (!user) {
-      return response.status(400).json({ error: 'missing user' }) //Edit message when specific user is searched.
+      return response.status(400).json({ error: 'UserId missing or invalid' })
     }
 
     const blog = new Blog({
