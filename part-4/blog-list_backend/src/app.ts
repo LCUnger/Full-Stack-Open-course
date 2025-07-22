@@ -7,6 +7,7 @@ import logger from './utils/logger'
 import blogsRouter from './controllers/blogs.router'
 import middleware from './utils/middleware'
 import userRouter from './controllers/users.router'
+import loginRouter from './controllers/login.router'
 
 const app = express()
 
@@ -24,6 +25,8 @@ app.use(express.json())
 app.use('/api/blogs', blogsRouter)
 
 app.use('/api/users', userRouter)
+
+app.use('/api/login', loginRouter)
 
 app.use(middleware.unknownEndpoint)
 
