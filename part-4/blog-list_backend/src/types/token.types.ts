@@ -7,5 +7,5 @@ export interface TokenPayload {
 }
 
 export interface RequestWithToken extends Request {
-  token: string
+  token?: string
 }

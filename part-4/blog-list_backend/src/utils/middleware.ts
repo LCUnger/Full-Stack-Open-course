@@ -29,8 +29,6 @@ const tokenExtractor: RequestHandler = (request, response, next) => {
 
   if (authorization && authorization.startsWith('Bearer ')) {
     (request as RequestWithToken).token = authorization.replace('Bearer ', '');
-  } else {
-    return response.status(401).json({ error: 'token missing or invalid' });
   }
 
   next();
