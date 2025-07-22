@@ -1,9 +1,10 @@
-import type { ErrorRequestHandler } from "express"
+import type { ErrorRequestHandler, NextFunction, RequestHandler } from "express"
 import type { Request, Response } from "express"
 import logger from "./logger"
 import { error } from "console"
+import { RequestWithToken } from "../types/token.types"
 
-const errorHandler: ErrorRequestHandler = (error, request, response, next) => {
+const errorHandler: ErrorRequestHandler = (error, _request, response, next) => {
   logger.error(error)
   
   if (error.name === 'ValidationError') {
@@ -19,8 +20,21 @@ const errorHandler: ErrorRequestHandler = (error, request, response, next) => {
   next(error)
 }
 
-const unknownEndpoint = (request: Request, response: Response) => {
+const unknownEndpoint = (_request: Request, response: Response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-export default { errorHandler, unknownEndpoint }
+const tokenExtractor: RequestHandler = (request, response, next) => {
+  const authorization = request.get('authorization');
+
+  if (authorization && authorization.startsWith('Bearer ')) {
+    (request as RequestWithToken).token = authorization.replace('Bearer ', '');
+  } else {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  next();
+};
+
+
+export default { errorHandler, unknownEndpoint, tokenExtractor }

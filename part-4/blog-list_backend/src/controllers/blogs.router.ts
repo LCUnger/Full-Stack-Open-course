@@ -7,7 +7,7 @@ import type { DbBlogType } from '../types/blog.types'
 import User from '../models/user.model'
 import Blog from '../models/blog.model'
 import config from '../utils/config'
-import { TokenPayload } from '../types/token.types'
+import { RequestWithToken, TokenPayload } from '../types/token.types'
 
 const blogsRouter = express.Router()
 
@@ -28,16 +28,10 @@ const getToken = (request: Request) => {
   return null
 }
 
-blogsRouter.post('/', async (request: Request<{}, {}, BlogEntryType>, response: Response, next: NextFunction) => {
+blogsRouter.post('/', async (request: Request, response: Response, next: NextFunction) => {
   try {
     const blogBody = request.body
-
-    const token = getToken(request)
-
-    if (!token) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-    const decodedToken = jwt.verify(token, config.SECRET_KEY) as TokenPayload
+    const decodedToken = jwt.verify((request as RequestWithToken).token, config.SECRET_KEY) as TokenPayload
 
     const user = await User.findById(decodedToken.id)
 
