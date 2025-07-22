@@ -9,10 +9,15 @@ export interface UserEntryType {
 
 export interface UserType {
   username: string
-  passwordHash?: string
+  passwordHash: string
   name: string
-  id?: string
   blogs: mongoose.Types.ObjectId[]
+}
+
+export interface UserJsonType {
+  username: string
+  name: string
+  id: string
 }
 
 export interface PopulatedUserType extends Omit<UserType, 'blogs'> {
