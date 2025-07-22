@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { BlogType } from "./blog_types"
+import { BlogType } from "./blog.types"
 
 export interface UserEntryType {
   username: string,

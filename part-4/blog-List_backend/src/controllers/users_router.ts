@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express'
-import { UserEntryType } from '../types/user_types'
+import { UserEntryType } from '../types/user.types'
 import bcrypt from 'bcrypt'
 import User from '../models/user_model'
 

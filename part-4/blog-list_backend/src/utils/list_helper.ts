@@ -1,5 +1,5 @@
 import blogsRouter from "../controllers/blogs_router"
-import type { BlogType } from "../types/blog_types"
+import type { BlogType } from "../types/blog.types"
 import ld from 'lodash'
 
 const dummy = (blogs: BlogType[]) => {

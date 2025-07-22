@@ -6,7 +6,7 @@ import app from '../app'
 import User from '../models/user_model'
 import helper from './user_api.helper'
 
-import type { UserEntryType, UserType } from '../types/user_types'
+import type { UserEntryType, UserType } from '../types/user.types'
 
 const api = supertest(app)
 

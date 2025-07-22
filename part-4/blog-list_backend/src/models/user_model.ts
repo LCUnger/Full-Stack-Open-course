@@ -1,7 +1,7 @@
 import mongoose, { mongo } from 'mongoose'
 import type { Schema } from 'mongoose'
 
-import type { DbUserType, UserType } from '../types/user_types'
+import type { DbUserType, UserType } from '../types/user.types'
 
 mongoose.set('strictQuery', false)
 

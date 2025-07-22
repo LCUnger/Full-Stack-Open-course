@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import listHelper from '../utils/list_helper'
 import mongoose from 'mongoose'
 
-import { BlogType } from '../types/blog_types'
+import { BlogType } from '../types/blog.types'
 import blogsRouter from '../controllers/blogs_router'
 
 test('dummy returns one', () => {

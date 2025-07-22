@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express'
-import type { BlogEntryType, BlogType } from '../types/blog_types'
-import type { DbBlogType } from '../types/blog_types'
+import type { BlogEntryType, BlogType } from '../types/blog.types'
+import type { DbBlogType } from '../types/blog.types'
 
 import User from '../models/user_model'
 import Blog from '../models/blog_model'
@@ -33,7 +33,7 @@ blogsRouter.post('/', async (request: Request<{}, {}, BlogEntryType>, response: 
 
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
-    
+
     response.status(201).json(savedBlog)
   } catch (error) {
     next(error)

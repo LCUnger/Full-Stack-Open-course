@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import type { Document, Schema } from 'mongoose'
 
-import type { DbBlogType, BlogType } from '../types/blog_types'
+import type { DbBlogType, BlogType } from '../types/blog.types'
 
 mongoose.set('strictQuery', false)
 
