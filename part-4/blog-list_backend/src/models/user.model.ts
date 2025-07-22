@@ -1,7 +1,7 @@
 import mongoose, { mongo } from 'mongoose'
 import type { Schema } from 'mongoose'
 
-import type { DbUserType, UserType } from '../types/user.types'
+import type { DbUserType, UserJsonType, UserType } from '../types/user.types'
 
 mongoose.set('strictQuery', false)
 
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema<DbUserType>({
 userSchema.set('toJSON', {
   transform: (document, _returnedObject) => {
     const { _id, username, name } = document.toObject()
-    const obj = { id: _id.toString(), username, name }
+    const obj: UserJsonType = { id: _id.toString(), username, name }
     return obj
   }
 })
