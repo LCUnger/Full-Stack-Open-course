@@ -7,7 +7,7 @@ import Blog from '../models/blog.model'
 import helper from './blog_api.helper'
 
 
-import type { BlogType } from '../types/blog.types'
+import type { BlogJsonType, BlogType } from '../types/blog.types'
 
 const api = supertest(app)
 
@@ -35,7 +35,7 @@ test('a valid blog can be added', async () => {
   assert.strictEqual(response.body.length, helper.initialBlogs.length+1)
   
   const expectedBlog = { ...newBlog, id: post.body.id, user: post.body.user }
-  assert.deepStrictEqual(blogs.find((blog: BlogType) => blog.id === expectedBlog.id), expectedBlog, 'The uploaded blog is not found in the database')
+  assert.deepStrictEqual(blogs.find((blog: BlogJsonType) => blog.id === expectedBlog.id), expectedBlog, 'The uploaded blog is not found in the database')
 })
 
 test('blogs are returned as json', async () => {
@@ -123,7 +123,7 @@ test('delete existing item', async () => {
   const blogs = getResponse.body
 
   assert.strictEqual(
-    blogs.find((blog: BlogType) => blog.id === postResponse.body.id),
+    blogs.find((blog: BlogJsonType) => blog.id === postResponse.body.id),
     undefined,
     'The deleted blog is still present in the database')
   
