@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import type { Document, Schema } from 'mongoose'
 
-import type { DbBlogType, BlogType } from '../types/blog.types'
+import type { DbBlogType, BlogType, BlogJsonType } from '../types/blog.types'
 
 mongoose.set('strictQuery', false)
 
@@ -17,10 +17,10 @@ const blogSchema: Schema<DbBlogType> = new mongoose.Schema({
 })
 
 blogSchema.set('toJSON', {
-  transform: (document, returnedObject: BlogType & { _id?: mongoose.Types.ObjectId, __v?: number}) => {
-    returnedObject.id = returnedObject._id!.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
+  transform: (document, _returnedObject) => {
+    const { _id, __v, ...rest } = document.toObject()
+    const obj: BlogJsonType = { id: _id.toString(), ...rest }
+    return obj
   },
 });
 

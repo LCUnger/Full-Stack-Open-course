@@ -13,8 +13,11 @@ export interface BlogType {
   author: string;
   url: string;
   likes: number;
-  id?: string;
   user: mongoose.Types.ObjectId
+}
+
+export interface BlogJsonType extends BlogType{
+  id: string
 }
 
 export interface PopulatedBlogType extends Omit<BlogType, 'user'> {
