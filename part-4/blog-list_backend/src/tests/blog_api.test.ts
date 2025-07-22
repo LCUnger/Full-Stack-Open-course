@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../app'
-import Blog from '../models/blog_model'
+import Blog from '../models/blog.model'
 import helper from './blog_api.helper'
 
 

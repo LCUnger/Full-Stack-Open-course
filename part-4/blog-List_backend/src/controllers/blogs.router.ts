@@ -2,8 +2,8 @@ import express, { Request, Response, NextFunction } from 'express'
 import type { BlogEntryType, BlogType } from '../types/blog.types'
 import type { DbBlogType } from '../types/blog.types'
 
-import User from '../models/user_model'
-import Blog from '../models/blog_model'
+import User from '../models/user.model'
+import Blog from '../models/blog.model'
 
 const blogsRouter = express.Router()
 

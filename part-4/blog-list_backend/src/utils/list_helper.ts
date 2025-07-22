@@ -1,4 +1,4 @@
-import blogsRouter from "../controllers/blogs_router"
+import blogsRouter from "../controllers/blogs.router"
 import type { BlogType } from "../types/blog.types"
 import ld from 'lodash'
 
