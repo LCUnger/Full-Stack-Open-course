@@ -3,8 +3,6 @@ import type { Document, Schema } from 'mongoose'
 
 import type { DbBlogType, BlogType, BlogJsonType } from '../types/blog.types'
 
-mongoose.set('strictQuery', false)
-
 const blogSchema: Schema<DbBlogType> = new mongoose.Schema({
   title: { type: String, required: true },
   author: String,

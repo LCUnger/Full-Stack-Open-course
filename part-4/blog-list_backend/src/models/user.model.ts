@@ -3,8 +3,6 @@ import type { Schema } from 'mongoose'
 
 import type { DbUserType, UserJsonType, UserType } from '../types/user.types'
 
-mongoose.set('strictQuery', false)
-
 const userSchema = new mongoose.Schema<DbUserType>({
   username: {
     type: String,
