@@ -4,6 +4,16 @@ import logger from "./logger"
 import { error } from "console"
 import { RequestWithToken } from "../types/token.types"
 
+export class BackEndError extends Error {
+  status: number;
+  constructor (msg: string, status: number) {
+    super(msg)
+    this.status = status
+    this.name = 'BackEndError'
+  }
+}
+
+
 const errorHandler: ErrorRequestHandler = (error, _request, response, next) => {
   logger.error(error)
   
@@ -15,6 +25,8 @@ const errorHandler: ErrorRequestHandler = (error, _request, response, next) => {
     return response.status(400).json({ error: 'expected `username` to be unique' })
   } else if (error.name === 'JsonWebTokenError') {
     return response.status(401).json({ error: 'token invalid' })
+  } else if (error.name === 'BackEndError') {
+    return response.status((error as BackEndError).status).json({error: error.message})
   }
 
   next(error)

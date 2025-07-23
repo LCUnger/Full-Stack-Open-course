@@ -1,13 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
-import type { BlogEntryType, BlogType } from '../types/blog.types'
 import type { DbBlogType } from '../types/blog.types'
+import type { RequestWithToken, TokenPayload } from '../types/token.types'
 
 import User from '../models/user.model'
 import Blog from '../models/blog.model'
 import config from '../utils/config'
-import { RequestWithToken, TokenPayload } from '../types/token.types'
+import { BackEndError } from '../utils/middleware'
 
 const blogsRouter = express.Router()
 
@@ -20,23 +20,28 @@ blogsRouter.get('/', async (request, response: Response<DbBlogType[]>, next: Nex
   }
 })
 
+const verifyToken = async (request: Request) => {
+  const token = (request as RequestWithToken).token;
+
+  if (!token) throw new BackEndError('token missing or invalid scheme', 401);
+
+  const decodedToken = jwt.verify(token, config.SECRET_KEY) as TokenPayload;
+
+  if (!decodedToken.id) throw new BackEndError('token invalid', 401);
+
+  const user = await User.findById(decodedToken.id);
+
+  if (!user) throw new BackEndError('UserId missing or invalid', 400);
+  
+  return user;
+};
+
 blogsRouter.post('/', async (request: Request, response: Response, next: NextFunction) => {
   try {
     const blogBody = request.body
 
-    const token = (request as RequestWithToken).token
 
-    if (!token) {
-      return response.status(401).json({ error: 'token missing or invalid' });
-    }
-
-    const decodedToken = jwt.verify(token, config.SECRET_KEY) as TokenPayload
-
-    const user = await User.findById(decodedToken.id)
-
-    if (!user) {
-      return response.status(400).json({ error: 'UserId missing or invalid' })
-    }
+    const user = await verifyToken(request)
 
     const blog = new Blog({
       ...blogBody, 
