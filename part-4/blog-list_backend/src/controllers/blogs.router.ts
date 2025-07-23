@@ -60,7 +60,19 @@ blogsRouter.post('/', async (request: Request, response: Response, next: NextFun
 
 blogsRouter.delete('/:id', async (request: Request<{id: string}>, response: Response, next: NextFunction) => {
   try {
-    await Blog.findByIdAndDelete(request.params.id)
+    const blogId = request.params.id
+    const user = await verifyToken(request)
+
+    const blog = await Blog.findById(blogId)
+    if (!blog) {
+      throw new BackEndError('Blog not found', 404)
+    }
+
+    if (blog.user.toString() !== user._id.toString()) {
+      throw new BackEndError('Not authorized to delete this blog', 403)
+    }
+
+    await Blog.findByIdAndDelete(blogId)
     response.status(204).end()
   } catch (error) {
     next(error)
