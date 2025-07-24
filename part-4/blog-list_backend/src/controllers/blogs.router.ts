@@ -2,12 +2,13 @@ import express, { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
 import type { DbBlogType } from '../types/blog.types'
-import type { RequestWithToken, TokenPayload } from '../types/token.types'
+import type { TokenPayload } from '../types/token.types'
 
 import User from '../models/user.model'
 import Blog from '../models/blog.model'
 import config from '../utils/config'
-import { BackEndError } from '../utils/middleware'
+import middleware, { BackEndError } from '../utils/middleware'
+import { RequestWithUser } from '../types/request.types'
 
 const blogsRouter = express.Router()
 
@@ -20,28 +21,11 @@ blogsRouter.get('/', async (request, response: Response<DbBlogType[]>, next: Nex
   }
 })
 
-const verifyToken = async (request: Request) => {
-  const token = (request as RequestWithToken).token;
-
-  if (!token) throw new BackEndError('token missing or invalid scheme', 401);
-
-  const decodedToken = jwt.verify(token, config.SECRET_KEY) as TokenPayload;
-
-  if (!decodedToken.id) throw new BackEndError('token invalid', 401);
-
-  const user = await User.findById(decodedToken.id);
-
-  if (!user) throw new BackEndError('UserId missing or invalid', 400);
-  
-  return user;
-};
-
-blogsRouter.post('/', async (request: Request, response: Response, next: NextFunction) => {
+blogsRouter.post('/', middleware.tokenHandler, async (request: Request, response: Response, next: NextFunction) => {
   try {
     const blogBody = request.body
-
-
-    const user = await verifyToken(request)
+    
+    const user = (request as RequestWithUser).user
 
     const blog = new Blog({
       ...blogBody, 
@@ -49,7 +33,7 @@ blogsRouter.post('/', async (request: Request, response: Response, next: NextFun
 
     const savedBlog = await blog.save()
 
-    user.blogs = user.blogs.concat(savedBlog._id)
+    user.blogs = user.blogs.concat([savedBlog._id])
     await user.save()
 
     response.status(201).json(savedBlog)
@@ -58,10 +42,10 @@ blogsRouter.post('/', async (request: Request, response: Response, next: NextFun
   }
 })
 
-blogsRouter.delete('/:id', async (request: Request<{id: string}>, response: Response, next: NextFunction) => {
+blogsRouter.delete('/:id', middleware.tokenHandler, async (request: Request<{id: string}>, response: Response, next: NextFunction) => {
   try {
     const blogId = request.params.id
-    const user = await verifyToken(request)
+    const user = (request as unknown as RequestWithUser).user
 
     const blog = await Blog.findById(blogId)
     if (!blog) {

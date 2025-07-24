@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, { Document } from "mongoose"
 import { BlogType } from "./blog.types"
 
 export interface UserEntryType {
@@ -24,4 +24,6 @@ export interface PopulatedUserType extends Omit<UserType, 'blogs'> {
   blogs: BlogType[]
 }
 
-export interface DbUserType extends UserType, Document {}
+export interface DbUserType extends UserType, Document {
+  _id: mongoose.Types.ObjectId
+}

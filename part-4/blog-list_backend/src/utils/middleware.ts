@@ -1,8 +1,15 @@
 import type { ErrorRequestHandler, NextFunction, RequestHandler } from "express"
 import type { Request, Response } from "express"
+import jwt from 'jsonwebtoken'
+
 import logger from "./logger"
 import { error } from "console"
-import { RequestWithToken } from "../types/token.types"
+import config from "./config"
+import User from "../models/user.model"
+
+import type { TokenPayload } from "../types/token.types"
+import { RequestWithUser } from "../types/request.types"
+
 
 export class BackEndError extends Error {
   status: number;
@@ -36,15 +43,32 @@ const unknownEndpoint = (_request: Request, response: Response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-const tokenExtractor: RequestHandler = (request, response, next) => {
-  const authorization = request.get('authorization');
+const tokenHandler: RequestHandler = async (request, _response, next) => {
+  try {
+    const authorization = request.get('authorization');
 
-  if (authorization && authorization.startsWith('Bearer ')) {
-    (request as RequestWithToken).token = authorization.replace('Bearer ', '');
+    let token: string | undefined
+
+    if (authorization && authorization.startsWith('Bearer ')) {
+      token = authorization.replace('Bearer ', '');
+    }
+
+    if (!token) throw new BackEndError('token missing or invalid scheme', 401);
+
+    const decodedToken = jwt.verify(token, config.SECRET_KEY) as TokenPayload;
+
+    if (!decodedToken.id) throw new BackEndError('token invalid', 401);
+
+    const user = await User.findById(decodedToken.id);
+
+    if (!user) throw new BackEndError('UserId missing or invalid', 400);
+
+    (request as RequestWithUser).user = user
+    next()
+  } catch (error) {
+    next(error)
   }
-
-  next();
 };
 
 
-export default { errorHandler, unknownEndpoint, tokenExtractor }
+export default { errorHandler, unknownEndpoint, tokenHandler }
