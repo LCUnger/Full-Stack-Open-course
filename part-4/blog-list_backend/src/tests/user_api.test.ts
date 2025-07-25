@@ -6,7 +6,7 @@ import app from '../app'
 import User from '../models/user.model'
 import helper from './user_api.helper'
 
-import type { UserEntryType, UserType } from '../types/user.types'
+import type { UserEntryType, UserJsonType } from '../types/user.types'
 
 const api = supertest(app)
 
@@ -33,10 +33,10 @@ test('a new user valid user can be added', async () => {
   const getResponse = await api.get('/api/users')
   const users = getResponse.body
 
-  // assert.strictEqual(getResponse.body.length, helper.initialUsers.length+1, "The database didn't grow by one after the post request")
+  assert.strictEqual(getResponse.body.length, helper.initialUsersData.length+1, "The database didn't grow by one after the post request")
   
   const { password, ...expectedUser } = { ...newUser, id: postResponse.body.id }
-  assert.deepStrictEqual(users.find((user: UserType) => user.id === expectedUser.id), expectedUser, 'The uploaded user is not found in the database')
+  assert.deepStrictEqual(users.find((user: UserJsonType) => user.id === expectedUser.id), expectedUser, 'The uploaded user is not found in the database')
 })
 
 after(async () => {

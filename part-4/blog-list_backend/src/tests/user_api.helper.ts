@@ -1,6 +1,16 @@
 import bcrypt from 'bcrypt'
+import supertest from 'supertest';
+import app from '../app';
 
-const initialUsersData = [
+const api = supertest(app)
+
+const initialUsersData: {
+  _id: string,
+  username: string,
+  name: string,
+  password: string,
+  token?: string
+}[] = [
   {
     _id: "687cef71832967f2c38f6b4f",
     username: "johndoe",
@@ -44,7 +54,16 @@ const getInitialUsers = async () => {
   )
 }
 
+const generateTokensInitialUsers = async () => {
+  let initialTokens: string[] = [];
+  for (const user of initialUsersData) {
+    const response = await api.post('/api/login')
+    initialTokens.push(response.body.token);
+  }
+}
+
 export default { 
   initialUsersData, // Raw data with 'password'
-  getInitialUsers   // Processed data with 'passwordHash'
+  getInitialUsers,   // Processed data with 'passwordHash'
+  generateTokensInitialUsers
 }

@@ -1,15 +1,58 @@
-import { test, after, beforeEach } from 'node:test'
+declare global {
+  var token: string;
+  var test_user: {
+    _id: string;
+    username: string;
+    name: string;
+    passwordHash: string;
+  };
+}
+
+import { test, after, beforeEach, before } from 'node:test'
 import assert from 'node:assert'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
+import bcrypt from 'bcrypt'
+
 import app from '../app'
 import Blog from '../models/blog.model'
 import helper from './blog_api.helper'
 
 
 import type { BlogJsonType, BlogType } from '../types/blog.types'
+import User from '../models/user.model';
 
 const api = supertest(app)
+
+before(async () => {
+  const test_user_login = {
+    username: 'test_user',
+    password: 'testing'
+  }
+
+  global.test_user = {
+    _id: '507f1f77bcf86cd799439011',
+    username: 'test_user',
+    name: 'test',
+    passwordHash: await bcrypt.hash(test_user_login.password, 10)
+  }
+
+  await User.deleteMany({})
+
+  const test_user = global.test_user
+  await User.insertOne(test_user);
+
+  const token_response = await api
+    .post('/api/login')
+    .send({username: test_user.username, password: test_user_login.password})
+  global.token = token_response.body.token
+
+  if (!token) {
+    console.error('No token!')
+    process.exit(1)
+  }
+  
+})
 
 
 beforeEach(async () => {
@@ -26,6 +69,7 @@ test('a valid blog can be added', async () => {
   }
   const post = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${global.token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -33,8 +77,11 @@ test('a valid blog can be added', async () => {
   const response = await api.get('/api/blogs')
   const blogs = response.body
   assert.strictEqual(response.body.length, helper.initialBlogs.length+1)
+
+
   
-  const expectedBlog = { ...newBlog, id: post.body.id, user: post.body.user }
+
+  const expectedBlog = { ...newBlog, id: post.body.id, user: {_id: global.test_user._id, username: global.test_user.username, name: global.test_user.name } }
   assert.deepStrictEqual(blogs.find((blog: BlogJsonType) => blog.id === expectedBlog.id), expectedBlog, 'The uploaded blog is not found in the database')
 })
 
@@ -59,6 +106,7 @@ test('likes property of added blog defaults to 0 if not given', async () => {
 
   const post = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${global.token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -87,12 +135,14 @@ test('test if creating a new blog without title or url responds with status code
 
   const responseNoTitle = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${global.token}`)
     .send(blogWithoutTitle)
     .expect(400)
 
   try {
     const responseNoUrl = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${global.token}`)
       .send(blogWithoutUrl)
       .expect(400)
   } catch (error:any) {
@@ -109,12 +159,14 @@ test('delete existing item', async () => {
   }
   const postResponse = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${global.token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
   const deleteResponse = await api
     .delete(`/api/blogs/${postResponse.body.id}`)
+    .set('Authorization', `Bearer ${global.token}`)
     .expect(204)
 
   const getResponse = await api
