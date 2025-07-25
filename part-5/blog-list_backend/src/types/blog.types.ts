@@ -1,0 +1,29 @@
+import mongoose, { Document } from "mongoose";
+import { UserType } from "./user.types";
+
+export interface BlogEntryType {
+  title: string;
+  author: string;
+  url: string;
+  likes?: number;
+}
+
+export interface BlogType {
+  title: string;
+  author: string;
+  url: string;
+  likes: number;
+  user: mongoose.Types.ObjectId
+}
+
+export interface BlogJsonType extends BlogType{
+  id: string
+}
+
+export interface PopulatedBlogType extends Omit<BlogType, 'user'> {
+  user: UserType
+}
+
+export interface DbBlogType extends BlogType, Document {
+  _id: mongoose.Types.ObjectId
+}

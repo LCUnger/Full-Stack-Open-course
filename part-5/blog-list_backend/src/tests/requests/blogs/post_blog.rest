@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikx1dWtfVW5nZXIiLCJpZCI6IjY4ODNlNDliODEwMWQ5NmJlOGEzYzU4MCIsImlhdCI6MTc1MzQ3NDIxMn0.6P2d4wlXSbM0qKibanefHmzQCUG5HAyC7n7ewg4gsvE
+
+{
+    "title": "horomonons" ,
+    "author": "me" ,
+    "url": "blank",
+    "likes": 10
+}
