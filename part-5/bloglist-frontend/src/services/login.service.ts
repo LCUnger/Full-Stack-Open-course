@@ -1,10 +1,10 @@
 import axios from 'axios'
-import type { inlogResponseData } from '../types/inlog.types'
+import type { inlogPostResponseData, loginCredentials } from '../types/inlog.types'
 
 const baseUrl = '/api/login'
 
-const login = async (credentials: {username: string, password: string}) => {
-  const response = await axios.post<inlogResponseData>(baseUrl, credentials)
+const login = async (credentials: loginCredentials) => {
+  const response = await axios.post<inlogPostResponseData>(baseUrl, credentials)
   return response.data
 }
 
