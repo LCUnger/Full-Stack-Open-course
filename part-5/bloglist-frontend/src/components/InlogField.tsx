@@ -12,8 +12,8 @@ const InlogField = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-    const userData = await loginService.login({ username, password });
-    login(userData)
+      const userData = await loginService.login({ username, password });
+      login(userData)
     } catch (error) {
       console.error('Login failed:', error)
     }
@@ -34,24 +34,32 @@ const InlogField = () => {
         <table>
           <tbody>
             <tr>
-              <td>Username:</td>
+              <td>
+                <label htmlFor="username">Username:</label>
+              </td>
               <td>
                 <input
+                  id="username"
                   type="text"
                   value={username}
                   onChange={event => setUsername(event.target.value)}
                   name="username"
+                  autoComplete="username"
                 />
               </td>
             </tr>
             <tr>
-              <td>Password:</td>
+              <td>
+                <label htmlFor="password">Password:</label>
+              </td>
               <td>
                 <input
-                  type="current-password"
+                  id="password"
+                  type="password"
                   value={password}
                   onChange={event => setPassword(event.target.value)}
                   name="password"
+                  autoComplete="current-password"
                 />
               </td>
             </tr>
