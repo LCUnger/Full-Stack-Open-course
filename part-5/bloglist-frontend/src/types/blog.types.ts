@@ -10,3 +10,9 @@ export interface BlogType {
   }
   id: string
 }
+
+export interface BlogEntryType {
+  title: string,
+  author: string,
+  url: string,
+}

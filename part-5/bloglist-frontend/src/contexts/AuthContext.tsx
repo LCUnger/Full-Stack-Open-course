@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 
 import { AuthContext } from "./useAuthContext"
+import blogService from "../services/blogs.service"
 
 import type { ReactNode } from "react"
 import type { inlogPostResponseData } from "../types/inlog.types"
@@ -22,19 +23,25 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (user?.token) {
+      blogService.setToken(user.token)
+    }
+  }, [user])
+
   const login = (userData: inlogPostResponseData) => {
     setUser(userData)
-
     localStorage.setItem('user', JSON.stringify(userData))
   }
 
   const logout = () => {
     setUser(undefined)
     localStorage.removeItem('user')
+    blogService.setToken('')
   }
 
   return (
-    <AuthContext.Provider value ={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
