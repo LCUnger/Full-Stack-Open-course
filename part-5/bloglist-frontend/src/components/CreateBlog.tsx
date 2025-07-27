@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import blogsService from '../services/blogs.service'
 import axios from 'axios'
+import { useNotification } from '../hooks/useNotification'
 
 interface CreateBlogProps {
   onBlogCreated: () => void
-  pushNotification: (message: string, isError: boolean) => void
 }
 
-const CreateBlog = ({ onBlogCreated, pushNotification }: CreateBlogProps) => {
+const CreateBlog = ({ onBlogCreated }: CreateBlogProps) => {
   const [title, setTitle] = useState<string>('')
   const [author, setAuthor] = useState<string>('')
   const [url, setUrl] = useState<string>('')
+
+  const { pushNotification } = useNotification()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()

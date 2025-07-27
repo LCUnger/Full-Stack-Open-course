@@ -1,18 +1,16 @@
 import { useState } from "react"
 import loginService from "../services/login.service"
-import { useAuth } from "../contexts/useAuthContext"
+import { useAuth } from "../hooks/useAuth"
 import axios from "axios"
-
-interface InlogFieldProps {
-  pushNotification: (message: string, isError: boolean) => void
-}
+import { useNotification } from "../hooks/useNotification"
 
 
-const InlogField = ({ pushNotification }: InlogFieldProps) => {
+const InlogField = () => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
   const { login, user, logout } = useAuth()
+  const { pushNotification } = useNotification()
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

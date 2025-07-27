@@ -1,11 +1,14 @@
 import AuthProvider from './contexts/AuthContext'
 import AppContent from './components/AppContent'
+import NotificationProvider from './contexts/NotificationContext'
 
 const App = () => {
   return (
-    <AuthProvider>
-      <AppContent/>
-    </AuthProvider>
+    <NotificationProvider>
+      <AuthProvider>
+        <AppContent/>
+      </AuthProvider>
+    </NotificationProvider>
   )
 }
 

@@ -3,10 +3,10 @@ import Blog from './Blog'
 import blogService from '../services/blogs.service'
 import type { BlogType } from '../types/blog.types'
 import InlogField from './InlogField'
-import { useAuth } from '../contexts/useAuthContext'
+import { useAuth } from '../hooks/useAuth'
 import CreateBlog from './CreateBlog'
-import useNotification from '../hooks/useNotification'
 import Notification from './Notification'
+import { useNotification } from '../hooks/useNotification'
 
 const AppContent = () => {
   const [blogs, setBlogs] = useState<BlogType[]>([])
@@ -36,11 +36,11 @@ const AppContent = () => {
   return (
     <>
       <Notification message={notification.message} isError={notification.isError}/>
-      <InlogField pushNotification={pushNotification}/>
+      <InlogField/>
       {user && (
         <>
           <h2>Blogs</h2>
-          <CreateBlog onBlogCreated={handleBlogCreated} pushNotification={pushNotification}/>
+          <CreateBlog onBlogCreated={handleBlogCreated}/>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}

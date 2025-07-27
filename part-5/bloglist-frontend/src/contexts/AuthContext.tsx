@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 
-import { AuthContext } from "./useAuthContext"
+import { AuthContext } from "../hooks/useAuth"
 import blogService from "../services/blogs.service"
 
 import type { ReactNode } from "react"
