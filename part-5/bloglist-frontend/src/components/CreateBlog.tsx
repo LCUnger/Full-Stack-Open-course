@@ -1,23 +1,36 @@
 import { useState } from 'react'
 import blogsService from '../services/blogs.service'
+import axios from 'axios'
 
-const CreateBlog = () => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+interface CreateBlogProps {
+  onBlogCreated: () => void
+  pushNotification: (message: string, isError: boolean) => void
+}
 
-  const handleSubmit = async (event: React.FormEvent) => {
+const CreateBlog = ({ onBlogCreated, pushNotification }: CreateBlogProps) => {
+  const [title, setTitle] = useState<string>('')
+  const [author, setAuthor] = useState<string>('')
+  const [url, setUrl] = useState<string>('')
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    
+
     try {
+      await blogsService.create({ title, author, url })
 
-    await blogsService.create({ title, author, url })
+      setTitle('')
+      setAuthor('')
+      setUrl('')
 
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-    
+      pushNotification(`A new blog "${title}", by ${author} is added`, false)
+      
+      // Notify parent that a blog was created
+      onBlogCreated()
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || "An unknown error occurred";
+        pushNotification(errorMessage, true)
+      }
       console.error('Failed to create blog: ', error)
     }
   }

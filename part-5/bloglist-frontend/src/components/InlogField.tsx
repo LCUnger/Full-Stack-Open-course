@@ -1,9 +1,14 @@
 import { useState } from "react"
 import loginService from "../services/login.service"
 import { useAuth } from "../contexts/useAuthContext"
+import axios from "axios"
+
+interface InlogFieldProps {
+  pushNotification: (message: string, isError: boolean) => void
+}
 
 
-const InlogField = () => {
+const InlogField = ({ pushNotification }: InlogFieldProps) => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
@@ -14,7 +19,11 @@ const InlogField = () => {
     try {
       const userData = await loginService.login({ username, password });
       login(userData)
-    } catch (error) {
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || "An unknown error occurred";
+        pushNotification(errorMessage, true)
+      }
       console.error('Login failed:', error)
     }
   }

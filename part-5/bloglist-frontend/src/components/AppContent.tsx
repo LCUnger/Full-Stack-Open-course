@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Blog from './Blog'
 import blogService from '../services/blogs.service'
 import type { BlogType } from '../types/blog.types'
@@ -13,30 +13,34 @@ const AppContent = () => {
   const { user } = useAuth()
   const { pushNotification, notification } = useNotification()
 
-  useEffect(() => {
+  const fetchBlogs = useCallback(async () => {
     if (user) {
-      const fetchBlogs = async () => {
-        try {
-          const blogs = await blogService.getAll()
-          setBlogs(blogs)
-        } catch (error) {
-          pushNotification('Failed to get blogs', true)
-          console.error('Failed to fetch blogs:', error)
-        }
+      try {
+        const blogs = await blogService.getAll()
+        setBlogs(blogs)
+      } catch (error) {
+        pushNotification('Failed to get blogs', true)
+        console.error('Failed to fetch blogs:', error)
       }
-
-      fetchBlogs()
     }
   }, [user, pushNotification])
+
+  useEffect(() => {
+    fetchBlogs()
+  }, [fetchBlogs])
+
+  const handleBlogCreated = () => {
+    fetchBlogs()
+  }
 
   return (
     <>
       <Notification message={notification.message} isError={notification.isError}/>
-      <InlogField/>
+      <InlogField pushNotification={pushNotification}/>
       {user && (
         <>
           <h2>Blogs</h2>
-          <CreateBlog/>
+          <CreateBlog onBlogCreated={handleBlogCreated} pushNotification={pushNotification}/>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
