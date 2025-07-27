@@ -5,10 +5,13 @@ import type { BlogType } from '../types/blog.types'
 import InlogField from './InlogField'
 import { useAuth } from '../contexts/useAuthContext'
 import CreateBlog from './CreateBlog'
+import useNotification from '../hooks/useNotification'
+import Notification from './Notification'
 
 const AppContent = () => {
   const [blogs, setBlogs] = useState<BlogType[]>([])
   const { user } = useAuth()
+  const { pushNotification, notification } = useNotification()
 
   useEffect(() => {
     if (user) {
@@ -17,16 +20,18 @@ const AppContent = () => {
           const blogs = await blogService.getAll()
           setBlogs(blogs)
         } catch (error) {
+          pushNotification('Failed to get blogs', true)
           console.error('Failed to fetch blogs:', error)
         }
       }
 
       fetchBlogs()
     }
-  }, [user])
+  }, [user, pushNotification])
 
   return (
     <>
+      <Notification message={notification.message} isError={notification.isError}/>
       <InlogField/>
       {user && (
         <>
