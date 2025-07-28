@@ -1,0 +1,101 @@
+.blogExpanded {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px 0;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.blogTitleAuthor {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.blogTitleAuthor button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.blogTitleAuthor button:hover {
+  background-color: #c82333;
+}
+
+.blogDetails {
+  margin-top: 12px;
+}
+
+.blogDetails > div {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blogDetails a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.blogDetails a:hover {
+  text-decoration: underline;
+}
+
+.blogDetails button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.blogDetails button:hover {
+  background-color: #218838;
+}
+
+.blogCollapsed {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  margin: 4px 0;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.blogCollapsed:hover {
+  background-color: #f8f9fa;
+}
+
+.blogCollapsed span {
+  font-weight: 500;
+}
+
+.blogCollapsed button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.blogCollapsed button:hover {
+  background-color: #0056b3;
+}
