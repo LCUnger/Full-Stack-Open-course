@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Blog from './Blog'
 import blogService from '../services/blogs.service'
 import type { BlogType } from '../types/blog.types'
@@ -7,11 +7,14 @@ import { useAuth } from '../hooks/useAuth'
 import CreateBlog from './CreateBlog'
 import Notification from './Notification'
 import { useNotification } from '../hooks/useNotification'
+import Toggleable from './Toggleable'
+import type  { ToggleableRef }  from './Toggleable'
 
 const AppContent = () => {
   const [blogs, setBlogs] = useState<BlogType[]>([])
   const { user } = useAuth()
   const { pushNotification, notification } = useNotification()
+  const CreateBlogToggleRef = useRef<ToggleableRef>(null)
 
   const fetchBlogs = useCallback(async () => {
     if (user) {
@@ -31,6 +34,7 @@ const AppContent = () => {
 
   const handleBlogCreated = () => {
     fetchBlogs()
+    CreateBlogToggleRef.current?.hide()
   }
 
   return (
@@ -40,7 +44,10 @@ const AppContent = () => {
       {user && (
         <>
           <h2>Blogs</h2>
-          <CreateBlog onBlogCreated={handleBlogCreated}/>
+          <Toggleable ref={CreateBlogToggleRef} buttonLabel='new blog'>
+            <CreateBlog onBlogCreated={handleBlogCreated}/>
+          </Toggleable>
+
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
