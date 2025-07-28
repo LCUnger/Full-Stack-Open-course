@@ -1,14 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
 
-import type { DbBlogType } from '../types/blog.types'
-import type { TokenPayload } from '../types/token.types'
+import type { BlogEntryType, BlogType, DbBlogType } from '../types/blog.types'
 
-import User from '../models/user.model'
 import Blog from '../models/blog.model'
-import config from '../utils/config'
 import middleware, { BackEndError } from '../utils/middleware'
 import { RequestWithUser } from '../types/request.types'
+import { update } from 'lodash'
 
 const blogsRouter = express.Router()
 
@@ -21,7 +18,7 @@ blogsRouter.get('/', async (request, response: Response<DbBlogType[]>, next: Nex
   }
 })
 
-blogsRouter.post('/', middleware.tokenHandler, async (request: Request, response: Response, next: NextFunction) => {
+blogsRouter.post('/', middleware.tokenHandler, async (request: Request<{}, {}, BlogEntryType>, response: Response, next: NextFunction) => {
   try {
     const blogBody = request.body
     
@@ -58,6 +55,18 @@ blogsRouter.delete('/:id', middleware.tokenHandler, async (request: Request<{id:
 
     await Blog.findByIdAndDelete(blogId)
     response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
+
+blogsRouter.put('/:id', middleware.tokenHandler, async (request: Request<{id: string}, {}, BlogType>, response: Response, next: NextFunction) => {
+  try {
+    const blogId = request.params.id
+    const updatedBlog = request.body
+
+    await Blog.findByIdAndUpdate(blogId, updatedBlog)
+    response.status(200).json(updatedBlog)
   } catch (error) {
     next(error)
   }
