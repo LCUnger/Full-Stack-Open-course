@@ -50,7 +50,7 @@ const AppContent = () => {
           </Toggleable>
 
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} onBlogRemoved={fetchBlogs}/>
           )}
         </>
       )}

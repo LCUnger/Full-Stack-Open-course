@@ -5,7 +5,12 @@ import blogsService from "../services/blogs.service";
 import { useNotification } from "../hooks/useNotification";
 import axios from "axios";
 
-const Blog = ({blog}: {blog: BlogType}) => {
+interface BlogProps {
+  blog: BlogType, 
+  onBlogRemoved: () => void
+}
+
+const Blog = ({blog, onBlogRemoved}: BlogProps) => {
   const [displayDetails, setDisplayDetails] = useState(false)
   const [liked, setLiked] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
@@ -40,6 +45,24 @@ const Blog = ({blog}: {blog: BlogType}) => {
     }
   }
 
+  const handleRemove = async () => {
+    try {
+      const confirmed = window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)
+      if (!confirmed) return
+
+      await blogsService.remove(blog.id)
+      pushNotification(`Blog "${blog.title}" removed successfully`, false)
+      
+      onBlogRemoved()
+    } catch (error) {
+      console.error('Failed to remove blog: ', error)
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || "An unknown error occurred";
+        pushNotification(errorMessage, true)
+      }
+    }
+  }
+
   if (displayDetails) {
     return (
       <div className={styles.blogExpanded}>
@@ -63,7 +86,7 @@ const Blog = ({blog}: {blog: BlogType}) => {
           </div>
           <div>Added by: {blog.user?.name}</div>
           <div>
-            <button>remove</button>
+            <button onClick={handleRemove}>remove</button>
           </div>
         </div>
       </div> 
