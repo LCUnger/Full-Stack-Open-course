@@ -2,11 +2,14 @@ import { useState } from "react";
 import type { BlogType } from "../types/blog.types";
 import styles from "../styles/Blog.module.css";
 import blogsService from "../services/blogs.service";
+import { useNotification } from "../hooks/useNotification";
+import axios from "axios";
 
 const Blog = ({blog}: {blog: BlogType}) => {
   const [displayDetails, setDisplayDetails] = useState(false)
   const [liked, setLiked] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
+  const { pushNotification } = useNotification()
 
   const toggleDisplayDetails = () => {
     setDisplayDetails(!displayDetails)
@@ -24,13 +27,16 @@ const Blog = ({blog}: {blog: BlogType}) => {
 
       const updatedBlog = await blogsService.update({...blog, likes: newLikesCount})
       setLikes(updatedBlog.likes)
-      console.log('current likes', likes)
 
     } catch (error) {
       // Rollback on error
       setLiked(liked)
       setLikes(likes)
       console.error('Failed to update like: ', error)
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || "An unknown error occurred";
+        pushNotification(errorMessage, true)
+      }
     }
   }
 
@@ -56,6 +62,9 @@ const Blog = ({blog}: {blog: BlogType}) => {
             </button>
           </div>
           <div>Added by: {blog.user?.name}</div>
+          <div>
+            <button>remove</button>
+          </div>
         </div>
       </div> 
     )
