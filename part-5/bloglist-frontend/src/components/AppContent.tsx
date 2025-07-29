@@ -20,6 +20,7 @@ const AppContent = () => {
     if (user) {
       try {
         const blogs = await blogService.getAll()
+        blogs.sort((a, b) => b.likes - a.likes)
         setBlogs(blogs)
       } catch (error) {
         pushNotification('Failed to get blogs', true)
