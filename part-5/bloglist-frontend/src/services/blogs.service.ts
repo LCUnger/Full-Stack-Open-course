@@ -32,10 +32,13 @@ const update = async (blog: BlogType) => {
     url: blog.url,
     user: blog.user._id
   }
-  console.log('inside update', updatedBlog)
   const response = await apiClient.put<BlogType>(`/${blog.id}`, updatedBlog)
-  console.log('inside update response', response.data)
   return response.data
 }
 
-export default { getAll, create, setToken, update }
+const remove = async (blogId: string) => {
+  const response = await apiClient.delete(`/${blogId}`)
+  return response.data
+}
+
+export default { getAll, create, setToken, update, remove }
