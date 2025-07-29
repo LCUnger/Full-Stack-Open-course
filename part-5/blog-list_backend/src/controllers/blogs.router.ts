@@ -65,8 +65,9 @@ blogsRouter.put('/:id', middleware.tokenHandler, async (request: Request<{id: st
     const blogId = request.params.id
     const updatedBlog = request.body
 
-    await Blog.findByIdAndUpdate(blogId, updatedBlog)
-    response.status(200).json(updatedBlog)
+    const returnedBlog = await Blog.findByIdAndUpdate(blogId, updatedBlog, {new: true}).populate('user', {username: 1, name: 1})
+
+    response.status(200).json(returnedBlog)
   } catch (error) {
     next(error)
   }
