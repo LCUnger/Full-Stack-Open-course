@@ -19,7 +19,7 @@
 }
 
 .blogTitleAuthor button {
-  background-color: #dc3545;
+  background-color: #0056b3;
   color: white;
   border: none;
   border-radius: 4px;
@@ -29,7 +29,7 @@
 }
 
 .blogTitleAuthor button:hover {
-  background-color: #c82333;
+  background-color: #007bff;
 }
 
 .blogDetails {
@@ -53,7 +53,7 @@
 }
 
 .blogDetails button {
-  background-color: #28a745;
+  background-color: #dc3545;
   color: white;
   border: none;
   border-radius: 4px;
@@ -63,7 +63,7 @@
 }
 
 .blogDetails button:hover {
-  background-color: #218838;
+  background-color: #e57373;
 }
 
 .blogCollapsed {
