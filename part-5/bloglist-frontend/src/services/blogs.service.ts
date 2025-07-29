@@ -24,4 +24,18 @@ const create = async (blog: BlogEntryType): Promise<BlogType> => {
   return response.data
 }
 
-export default { getAll, create, setToken }
+const update = async (blog: BlogType) => {
+  const updatedBlog = {
+    title: blog.title,
+    author: blog.author,
+    likes: blog.likes,
+    url: blog.url,
+    user: blog.user._id
+  }
+  console.log('inside update', updatedBlog)
+  const response = await apiClient.put<BlogType>(`/${blog.id}`, updatedBlog)
+  console.log('inside update response', response.data)
+  return response.data
+}
+
+export default { getAll, create, setToken, update }
