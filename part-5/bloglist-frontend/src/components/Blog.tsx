@@ -3,6 +3,7 @@ import type { BlogType } from "../types/blog.types";
 import styles from "../styles/Blog.module.css";
 import blogsService from "../services/blogs.service";
 import { useNotification } from "../hooks/useNotification";
+import { useAuth } from "../hooks/useAuth";
 import axios from "axios";
 
 interface BlogProps {
@@ -15,6 +16,9 @@ const Blog = ({blog, onBlogRemoved}: BlogProps) => {
   const [liked, setLiked] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
   const { pushNotification } = useNotification()
+  const { user } = useAuth()
+
+  const isCreator = user && blog.user && user.id === blog.user._id
 
   const toggleDisplayDetails = () => {
     setDisplayDetails(!displayDetails)
@@ -85,9 +89,11 @@ const Blog = ({blog, onBlogRemoved}: BlogProps) => {
             </button>
           </div>
           <div>Added by: {blog.user?.name}</div>
-          <div>
-            <button onClick={handleRemove}>remove</button>
-          </div>
+          {isCreator && (
+            <div>
+              <button onClick={handleRemove}>remove</button>
+            </div>
+          )}
         </div>
       </div> 
     )
