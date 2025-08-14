@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
-import type { DbBlogType } from '../types/blog.types'
+import type { BlogType, DbBlogType } from '../types/blog.types'
 import type { TokenPayload } from '../types/token.types'
 
 import User from '../models/user.model'
@@ -58,6 +58,37 @@ blogsRouter.delete('/:id', middleware.tokenHandler, async (request: Request<{id:
 
     await Blog.findByIdAndDelete(blogId)
     response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
+
+blogsRouter.put('/:id', async (request: Request<{id: string}, {}, BlogType>, response: Response<DbBlogType>, next: NextFunction) => {
+  try {
+    const blogId = request.params.id
+    const blogBody = request.body
+
+    // Validate that the blog exists
+    const existingBlog = await Blog.findById(blogId)
+    if (!existingBlog) {
+      throw new BackEndError('Blog not found', 404)
+    }
+
+    // Update and return the updated blog with populated user data
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      blogId, 
+      blogBody, 
+      { 
+        new: true,  // Return the updated document
+        runValidators: true  // Run mongoose validators
+      }
+    ).populate('user', { username: 1, name: 1 })
+
+    if (!updatedBlog) {
+      throw new BackEndError('Failed to update blog', 500)
+    }
+
+    response.json(updatedBlog)
   } catch (error) {
     next(error)
   }
