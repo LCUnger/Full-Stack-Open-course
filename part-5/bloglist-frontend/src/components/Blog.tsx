@@ -69,7 +69,7 @@ const Blog = ({blog, onBlogRemoved}: BlogProps) => {
 
   if (displayDetails) {
     return (
-      <div className={styles.blogExpanded}>
+      <div className={`${styles.blogExpanded} blog`}>
         <div className={styles.blogTitleAuthor}>
           {blog.title} by {blog.author} 
           <button onClick={toggleDisplayDetails}>hide</button>
@@ -100,7 +100,7 @@ const Blog = ({blog, onBlogRemoved}: BlogProps) => {
   }
 
   return (
-    <div className={styles.blogCollapsed}>
+    <div className={`${styles.blogExpanded} blog`}>
       <span>{blog.title} by {blog.author}</span>
       <button onClick={toggleDisplayDetails}>view</button>
     </div>  
