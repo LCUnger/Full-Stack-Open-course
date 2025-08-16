@@ -76,7 +76,7 @@ const Blog = ({blog, onBlogRemoved}: BlogProps) => {
         </div>
         <div className={styles.blogDetails}>
           <div>URL: <a href={blog.url}>{blog.url}</a></div>
-          <div>
+          <div className="likeDisplay">
             Likes: {likes}
             <button 
               onClick={handleLike} 
