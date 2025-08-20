@@ -42,15 +42,38 @@ describe('Blog app', () => {
     })
 
     test('a new blog can be created', async ({ page }) => {
-      await page.getByRole('button', { name: 'new blog' }).click()
-      await page.getByRole('textbox', {name: 'Title'}).fill(testBlog.title)
-      await page.getByRole('textbox', {name: 'Author'}).fill(testBlog.author)
-      await page.getByRole('textbox', {name: 'URL'}).fill(testBlog.url)
-      await page.getByRole('button', {name: 'Create'}).click()
+      helper.addBlog(page)
 
       await expect(page.getByText(`${testBlog.title} by ${testBlog.author}`)).toBeVisible()
     })
 
-    test('blog can be liked')
+    describe('test blog functionality', () => {
+      beforeEach(async ({ page}) => {
+        helper.addBlog(page)
+
+      })
+
+      test('blog can be expanded', async ({ page }) => {
+         const viewButton = await page.getByRole('button', { name: 'view'})
+         await expect(viewButton).toBeVisible()
+
+         await viewButton.click()
+
+         await expect(page.getByRole('button', {name: 'hide'})).toBeVisible()
+      })
+
+      test.only('blog can be liked', async ({ page }) => {
+        helper.extendBlog(page, testBlog)
+        const likeButton = await page.getByRole('button', {name: "Like"})
+        const likeDisplay = await page.locator('.likeDisplay')
+        await expect(likeButton).toBeVisible()
+        await expect(likeDisplay).toContainText('0')
+
+        await likeButton.click()
+        console.log('innertext', await likeButton.innerText())
+        await expect(await likeButton.innerText()).toBe('Unlike')
+        await expect(likeDisplay).toContainText('1')
+      })
+    })
   })
 })
