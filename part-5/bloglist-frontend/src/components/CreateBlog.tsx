@@ -26,7 +26,6 @@ const CreateBlog = ({ onBlogCreated }: CreateBlogProps) => {
 
       pushNotification(`A new blog "${title}", by ${author} is added`, false)
       
-      // Notify parent that a blog was created
       onBlogCreated()
     } catch (error) {
       if (axios.isAxiosError(error)) {
