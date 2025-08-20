@@ -42,30 +42,30 @@ const InlogField = () => {
           <tbody>
             <tr>
               <td>
-                <label htmlFor="username">Username:</label>
+                <label htmlFor="username_entry">Username:</label>
               </td>
               <td>
                 <input
-                  id="username"
+                  id="username_entry"
                   type="text"
                   value={username}
                   onChange={event => setUsername(event.target.value)}
-                  name="username"
+                  name="username_entry"
                   autoComplete="username"
                 />
               </td>
             </tr>
             <tr>
               <td>
-                <label htmlFor="password">Password:</label>
+                <label htmlFor="password_entry">Password:</label>
               </td>
               <td>
                 <input
-                  id="password"
-                  type="password"
+                  id="password_entry"
+                  type="password_entry"
                   value={password}
                   onChange={event => setPassword(event.target.value)}
-                  name="password"
+                  name="password_entry"
                   autoComplete="current-password"
                 />
               </td>
