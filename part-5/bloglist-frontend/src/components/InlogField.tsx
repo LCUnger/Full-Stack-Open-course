@@ -17,6 +17,7 @@ const InlogField = () => {
     try {
       const userData = await loginService.login({ username, password });
       login(userData)
+      pushNotification(`${userData.name} logged in`)
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.error || "An unknown error occurred";
@@ -62,7 +63,7 @@ const InlogField = () => {
               <td>
                 <input
                   id="password_entry"
-                  type="password_entry"
+                  type="password"
                   value={password}
                   onChange={event => setPassword(event.target.value)}
                   name="password_entry"
