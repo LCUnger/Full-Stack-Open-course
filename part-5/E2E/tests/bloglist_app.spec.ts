@@ -1,6 +1,6 @@
 import { test, expect, beforeEach, describe } from "@playwright/test"
 
-import { testUser, testBlog } from "./bloglist_helper"
+import { testUser, testBlog, testUser2 } from "./bloglist_helper"
 import helper from "./bloglist_helper"
 
 describe('Blog app', () => {
@@ -8,6 +8,9 @@ describe('Blog app', () => {
     await request.post('http://localhost:3003/api/testing/reset')
     await request.post('http://localhost:3003/api/users', {
       data: testUser
+    })
+    await request.post('http://localhost:3003/api/users', {
+      data: testUser2
     })
 
 
@@ -22,7 +25,7 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('login successfully', async ({ page }) => {
-      helper.login(page)
+      await helper.login(page)
 
       await expect(page.getByText(`${testUser.name} logged in`)).toBeVisible()
     })
@@ -38,18 +41,18 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      helper.login(page)
+      await helper.login(page)
     })
 
     test('a new blog can be created', async ({ page }) => {
-      helper.addBlog(page)
+      await helper.addBlog(page)
 
       await expect(page.getByText(`${testBlog.title} by ${testBlog.author}`)).toBeVisible()
     })
 
     describe('test blog functionality', () => {
       beforeEach(async ({ page}) => {
-        helper.addBlog(page)
+        await helper.addBlog(page)
 
       })
 
@@ -62,17 +65,28 @@ describe('Blog app', () => {
          await expect(page.getByRole('button', {name: 'hide'})).toBeVisible()
       })
 
-      test.only('blog can be liked', async ({ page }) => {
-        helper.extendBlog(page, testBlog)
+      test('blog can be liked', async ({ page }) => {
+        await helper.extendBlog(page, testBlog)
         const likeButton = await page.getByRole('button', {name: "Like"})
         const likeDisplay = await page.locator('.likeDisplay')
         await expect(likeButton).toBeVisible()
         await expect(likeDisplay).toContainText('0')
 
         await likeButton.click()
-        console.log('innertext', await likeButton.innerText())
         await expect(await likeButton.innerText()).toBe('Unlike')
         await expect(likeDisplay).toContainText('1')
+      })
+
+      test('only user who added blog can see delete button', async ({ page }) => {
+        await helper.extendBlog(page, testBlog)
+        await expect(page.getByRole('button', {name: 'remove'})).toBeVisible()
+
+        await page.getByRole('button', {name: 'logout'}).click()
+        await helper.login(page, testUser2)
+
+        await helper.extendBlog(page, testBlog)
+        await console.log(await page.locator('button', { hasText: 'remove' }))
+        await expect(page.locator('button', { hasText: 'remove' })).toHaveCount(0)
       })
     })
   })

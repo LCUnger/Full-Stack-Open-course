@@ -19,7 +19,7 @@ const Blog = ({blog, onBlogRemoved}: BlogProps) => {
   const { user } = useAuth()
 
   const isCreator = user && blog.user && user.id === blog.user._id
-
+  
   const toggleDisplayDetails = () => {
     setDisplayDetails(!displayDetails)
   }

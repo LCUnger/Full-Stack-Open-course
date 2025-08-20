@@ -1,3 +1,5 @@
+import type { Page } from "@playwright/test"
+
 export const testUser = {
   name: "Test User",
   username: "test_user",
@@ -16,13 +18,17 @@ export const testBlog = {
   url: "example/test.com"
 }
 
-const login = async (page, user=testUser) => {
+const login = async (page: Page, user = testUser) => {
+  await page.getByRole('textbox', { name: 'Username'}).waitFor({ state: 'visible' })
+  
   await page.getByRole('textbox', { name: 'Username'}).fill(user.username)
   await page.getByRole('textbox', { name: 'Password'}).fill(user.password)
   await page.getByRole('button', { name: 'login'}).click()
+  
+  await page.getByText(`${user.name} logged in`).waitFor({ state: 'visible' })
 }
 
-const addBlog = async ( page, blog=testBlog ) => {
+const addBlog = async (page:Page, blog=testBlog ) => {
       await page.getByRole('button', { name: 'new blog' }).click()
       await page.getByRole('textbox', {name: 'Title'}).fill(blog.title)
       await page.getByRole('textbox', {name: 'Author'}).fill(blog.author)
@@ -31,7 +37,7 @@ const addBlog = async ( page, blog=testBlog ) => {
       await page.getByText(`${blog.title} by ${blog.author}`).waitFor()
 }
 
-const extendBlog = async (page, blog) => {
+const extendBlog = async (page:Page, blog) => {
   const displayedBlog = await page.getByText(`${blog.title} by ${blog.author}`).locator('..')
   const viewButton = await displayedBlog.getByRole('button', { name: 'view' })
   await viewButton.click()
