@@ -4,15 +4,21 @@ export const testUser = {
   password: "testing"
 }
 
+export const testUser2 = {
+  name: "Second Test user",
+  username: "test_user_2",
+  password: "testing-as-well"
+}
+
 export const testBlog = {
   title: "TestBlog",
   author: "nobody",
   url: "example/test.com"
 }
 
-const login = async (page) => {
-  await page.getByRole('textbox', { name: 'Username'}).fill(testUser.username)
-  await page.getByRole('textbox', { name: 'Password'}).fill(testUser.password)
+const login = async (page, user=testUser) => {
+  await page.getByRole('textbox', { name: 'Username'}).fill(user.username)
+  await page.getByRole('textbox', { name: 'Password'}).fill(user.password)
   await page.getByRole('button', { name: 'login'}).click()
 }
 
