@@ -16,4 +16,19 @@ const login = async (page) => {
   await page.getByRole('button', { name: 'login'}).click()
 }
 
-export default { login }
+const addBlog = async ( page, blog=testBlog ) => {
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByRole('textbox', {name: 'Title'}).fill(blog.title)
+      await page.getByRole('textbox', {name: 'Author'}).fill(blog.author)
+      await page.getByRole('textbox', {name: 'URL'}).fill(blog.url)
+      await page.getByRole('button', {name: 'Create'}).click()
+      await page.getByText(`${blog.title} by ${blog.author}`).waitFor()
+}
+
+const extendBlog = async (page, blog) => {
+  const displayedBlog = await page.getByText(`${blog.title} by ${blog.author}`).locator('..')
+  const viewButton = await displayedBlog.getByRole('button', { name: 'view' })
+  await viewButton.click()
+}
+
+export default { login, addBlog, extendBlog }
