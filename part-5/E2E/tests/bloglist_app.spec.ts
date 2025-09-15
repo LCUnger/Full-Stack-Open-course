@@ -1,14 +1,17 @@
 import { test, expect, beforeEach, describe } from "@playwright/test"
 
+import Blog from '../../blog-list_backend/src/models/blog.model'
+
 import { testUser, testBlog, testUser2 } from "./bloglist_helper"
 import helper from "./bloglist_helper"
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
     await request.post('http://localhost:3003/api/testing/reset')
-    await request.post('http://localhost:3003/api/users', {
+    const user1 = await request.post('http://localhost:3003/api/users', {
       data: testUser
     })
+
     await request.post('http://localhost:3003/api/users', {
       data: testUser2
     })
@@ -87,6 +90,44 @@ describe('Blog app', () => {
         await helper.extendBlog(page, testBlog)
         await console.log(await page.locator('button', { hasText: 'remove' }))
         await expect(page.locator('button', { hasText: 'remove' })).toHaveCount(0)
+      })
+    })
+
+    describe('tests with multiple blogs added', () => {
+      beforeEach(async ({page, request}) => {
+        await request.post('http://localhost:3003/api/testing/uplaod', {
+          data: { helper.testBlogs },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ', // replace with actual token
+          }
+        })
+
+      })
+      test('blogs are ordered according to likes', async ({page}) => {
+        const blogs = await page.locator('.blog').all()
+
+        console.log('blogs', await blogs)
+
+        for (const blog of blogs) {
+          await helper.extendBlogEntry(blog)
+        }
+
+        await helper.likeExtendedBlog(blogs[2])
+
+        await page.reload()
+
+        // await helper.login(page)
+
+        const blogsReloaded = await page.locator('.blog').all()
+
+        console.log('test', await blogsReloaded)
+
+
+
+        // const titlesReloaded = blogsReloaded.map(blog => {
+        //   await blog.
+        // })
       })
     })
   })

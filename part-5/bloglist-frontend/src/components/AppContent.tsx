@@ -48,10 +48,11 @@ const AppContent = () => {
           <Toggleable ref={CreateBlogToggleRef} buttonLabel='new blog'>
             <CreateBlog onBlogCreated={handleBlogCreated}/>
           </Toggleable>
-
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} onBlogRemoved={fetchBlogs}/>
+          <div className='blogs'>
+            {blogs.map(blog =>
+              <Blog key={blog.id} blog={blog} onBlogRemoved={fetchBlogs}/>
           )}
+          </div>
         </>
       )}
     </>
